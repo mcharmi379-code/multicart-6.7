@@ -1,0 +1,54 @@
+.multi-cart-manager-dashboard {
+    .smart-bar-actions-container {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .sales-channel-select {
+            min-width: 250px;
+        }
+    }
+
+    .analytics-section {
+        margin-bottom: 20px;
+    }
+
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        padding: 20px 0;
+    }
+
+    .analytics-card {
+        background: #f5f5f5;
+        border-radius: 4px;
+        padding: 20px;
+        text-align: center;
+        border-left: 4px solid #62ff80;
+
+        .analytics-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .analytics-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+        }
+    }
+
+    .active-carts-section,
+    .completed-orders-section {
+        margin-bottom: 20px;
+    }
+
+    .smart-bar-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+}

@@ -1,0 +1,21 @@
+{% block swag_migration_wizard_page_select_profile %}
+    <div class="swag-migration-wizard-page-select-profile">
+        {% block swag_migration_wizard_page_select_profile_content %}
+            <div class="swag-migration-wizard__content">
+                {% block swag_migration_wizard_page_select_profile_selection %}
+                    <div class="swag-migration-wizard__form">
+                        <mt-select
+                            :model-value="selectedConnectionId"
+                            label-property="name"
+                            value-property="id"
+                            :options="connections"
+                            :label="$tc('swag-migration.wizard.pages.connectionSelect.connectionLabel')"
+                            :placeholder="$tc('swag-migration.wizard.pages.connectionSelect.connectionPlaceholder')"
+                            @update:model-value="onConnectionSelected"
+                        />
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

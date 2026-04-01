@@ -1,0 +1,27 @@
+<form method="post" action="{{ path('frontend.ictech.multi_cart.account.create') }}" class="ictech-account-carts__modal" hidden data-ictech-create-modal>
+    <div class="ictech-account-carts__modal-dialog">
+        <h3>{{ 'ictech-multi-cart.account.createButton'|trans }}</h3>
+        {% set createUnavailable = not multiCartState.canCreateCart %}
+        <input class="ictech-account-carts__input"
+               type="text"
+               name="name"
+               maxlength="255"
+               placeholder="{{ 'ictech-multi-cart.account.createPlaceholder'|trans }}"
+               {% if createUnavailable %}disabled{% endif %}>
+        {% if createUnavailable %}
+            <p class="mb-0">
+                {% if multiCartState.createCartReason is same as('limit_reached') %}
+                    {{ 'ictech-multi-cart.account.createLimitReached'|trans({'%limit%': multiCartState.maxCartsPerUser}) }}
+                {% else %}
+                    {{ 'ictech-multi-cart.account.createUnavailable'|trans }}
+                {% endif %}
+            </p>
+        {% endif %}
+        <div class="ictech-account-carts__modal-actions">
+            <button type="button" class="ictech-account-carts__btn ictech-account-carts__btn--ghost" data-ictech-modal-close>{{ 'ictech-multi-cart.account.cancel'|trans }}</button>
+            <button type="submit" class="ictech-account-carts__btn ictech-account-carts__btn--primary" {% if createUnavailable %}disabled{% endif %}>
+                {{ 'ictech-multi-cart.account.createButton'|trans }}
+            </button>
+        </div>
+    </div>
+</form>

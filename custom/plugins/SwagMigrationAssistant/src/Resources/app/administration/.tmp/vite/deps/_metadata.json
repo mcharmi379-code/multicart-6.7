@@ -1,0 +1,15 @@
+{
+  "hash": "ff19c975",
+  "configHash": "4a077684",
+  "lockfileHash": "e3b0c442",
+  "browserHash": "dc394201",
+  "optimized": {
+    "vue": {
+      "src": "../../../../../../../../../../vendor/shopware/administration/Resources/app/administration/node_modules/.shopware-vite-plugin-vue-globals/vue.js",
+      "file": "vue.js",
+      "fileHash": "0a1765e8",
+      "needsInterop": true
+    }
+  },
+  "chunks": {}
+}

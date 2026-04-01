@@ -1,0 +1,470 @@
+# 16.0.0
+
+- [BREAKING] [#124](https://github.com/shopware/SwagMigrationAssistant/pull/124) - refactor!: refactored log classes naming pattern
+    - [BREAKING] Renamed log classes in `SwagMigrationAssistant\Migration\Logging\Log\*`, `SwagMigrationAssistant\Profile\Shopware\Logging\Log\*` and `SwagMigrationAssistant\Profile\Shopware6\Logging\Log\*`:
+        - `CannotReadEntityCountLog` -> `ConvertAssociationMissingLog`
+        - `CannotConvertChildEntityLog` -> `ConvertChildEntityFailedLog`
+        - `UnsupportedObjectTypeLog` -> `ConvertDocumentTypeUnsupportedLog`
+        - `FieldReassignedRunLog` -> `ConvertEntityAlreadyExistsLog`
+        - `NotConvertedLog` -> `ConvertEntityFailedLog`
+        - `UnknownEntityLog` -> `ConvertEntityUnknownLog`
+        - `EntityAlreadyExistsRunLog` -> `ConvertFieldReassignedLog`
+        - `MainVariantRelationNotConverted` -> `ConvertMainVariantRelationFailedLog`
+        - `CannotConvertEntityLog` -> `FetchDataSetMissingLog`
+        - `EmptyNecessaryFieldRunLog` -> `FetchEntityCountFailedLog`
+        - `ThemeCompilingErrorRunLog` -> `FetchProcessorMissingLog`
+        - `CannotGetFileRunLog` -> `MediaFileMissingLog`
+        - `MimeTypeErrorLog` -> `MediaTemporaryFileFailedLog`
+        - `ProcessorNotFoundLog` -> `RunAbortedLog`
+        - `ExceptionRunLog` -> `RunExceptionLog`
+        - `MessageQueueExceptionLog` -> `RunMessageQueueExceptionLog`
+        - `WriteExceptionRunLog` -> `WriteExceptionLog`
+        - `UnsupportedSeoUrlTypeLog` -> `ConvertSeoUrlTypeUnsupportedLog`
+        - `UnsupportedTranslationTypeLog` -> `ConvertTranslationTypeUnsupportedLog`
+        - `UnsupportedShippingCalculationTypeLog` -> `ConvertShippingCalculationTypeUnsupportedLog`
+        - `DeactivatedPackLanguageLog` -> `ConvertLanguagePackDeactivatedLog`
+        - `UnsupportedShippingPriceLog` -> `ConvertShippingPriceUnsupportedLog`
+        - `UnsupportedMediaDefaultFolderLog` -> `ConvertMediaDefaultFolderUnsupportedLog`
+    - [BREAKING] Removed log classes in `SwagMigrationAssistant\Migration\Logging\Log\*`, `SwagMigrationAssistant\Profile\Shopware\Logging\Log\*` and `SwagMigrationAssistant\Profile\Shopware6\Logging\Log\*`:
+        - `AssociationRequiredMissingLog`
+        - `DataSetNotFoundLog`
+        - `DocumentTypeNotSupportedLog`
+        - `InvalidUnserializedDataLog`
+        - `RunAbortedAutomaticallyLog`
+        - `TemporaryFileErrorLog`
+        - `InvalidEmailAddressLog`
+        - `UnsupportedMailTemplateTypeLog`
+        - `UnsupportedNumberRangeTypeLog`
+        - `UnsupportedDocumentTypeLog`
+    - Added new log classes in `SwagMigrationAssistant\Migration\Logging\Log\*`:
+        - `ConvertObjectTypeUnsupportedLog`
+        - `ConvertSourceDataIncompleteLog`
+        - `ConvertUnserializedDataInvalidLog`
+        - `MediaMimeTypeUnknownLog`
+        - `WriteThemeCompilingFailedLog`
+
+- [BREAKING] [#115](https://github.com/shopware/SwagMigrationAssistant/pull/115) - refactor!: remove "Delete migration data" history action
+    - [BREAKING] Removed route `/api/_action/migration/clear-data-of-run` from `SwagMigrationAssistant\Controller\HistoryController`
+    - [BREAKING] Removed method `clearDataOfRun()` from `SwagMigrationAssistant\Migration\History\HistoryServiceInterface`
+    - [BREAKING] Removed route `/api/_action/migration/is-media-processing` from `SwagMigrationAssistant\Controller\HistoryController`
+    - [BREAKING] Removed method `isMediaProcessing()` from `SwagMigrationAssistant\Migration\History\HistoryServiceInterface`
+
+- [BREAKING] [#114](https://github.com/shopware/SwagMigrationAssistant/pull/114) - fix: use item-specific tax in order conversion
+    - [BREAKING] Removed parameter `taxRules` from method `getLineItems` of `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
+
+- [BREAKING] [#102](https://github.com/shopware/SwagMigrationAssistant/pull/102) - refactor!: use domain exception
+    - [BREAKING] Removed standalone exception classes in `SwagMigrationAssistant\Exception\**\*`:
+        - `SwagMigrationAssistant\Exception\AssociationEntityRequiredMissingException`
+        - `SwagMigrationAssistant\Exception\ConverterNotFoundException`
+        - `SwagMigrationAssistant\Exception\DataSetNotFoundException`
+        - `SwagMigrationAssistant\Exception\GatewayReadException`
+        - `SwagMigrationAssistant\Exception\LocaleNotFoundException`
+        - `SwagMigrationAssistant\Exception\MigrationIsAlreadyRunningException`
+        - `SwagMigrationAssistant\Exception\NoConnectionFoundException`
+        - `SwagMigrationAssistant\Exception\NoRunningMigrationException`
+        - `SwagMigrationAssistant\Exception\PremappingIsIncompleteException`
+        - `SwagMigrationAssistant\Exception\WriterNotFoundException`
+
+- [BREAKING] [#100](https://github.com/shopware/SwagMigrationAssistant/pull/100) - refactor!: unify public api
+    - [BREAKING] Flagged `SwagMigrationAssistant\Controller\DataProviderController` as `@internal` and added parent class of `Symfony\Bundle\FrameworkBundle\Controller\AbstractController`
+    - [BREAKING] Flagged `SwagMigrationAssistant\Controller\HistoryController` as `@internal`
+    - [BREAKING] Flagged `SwagMigrationAssistant\Controller\PremappingController` as `@internal`
+    - [BREAKING] Flagged `SwagMigrationAssistant\Controller\StatusController` as `@internal`
+    - [BREAKING] Flagged `SwagMigrationAssistant\Core\Migration\**\*` migrations as `@internal`
+    - [BREAKING] Flagged `SwagMigrationAssistant\DataProvider\Service\EnvironmentService` as `@internal`
+    - [BREAKING] Flagged `SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer` as `@internal`
+    - [BREAKING] Removed error code `FAILED_TO_CREATE_MIGRATION_LOG` and exception method `failedToCreateMigrationLog()` of `SwagMigrationAssistant\Exception\MigrationException`
+    - Added event class `MigrationPreErrorResolutionEvent` to allow extensions to hook into the pre error resolution step
+    - Added event class `MigrationPostErrorResolutionEvent` to allow extensions to hook into the post error resolution step
+    - Added class `MigrationErrorResolutionContext` to pass error resolution related context data
+
+- [#85](https://github.com/shopware/SwagMigrationAssistant/pull/85) - refactor: use xxh hash
+    - Changed checksum calculation in `SwagMigrationAssistant\Migration\Converter\Converter::generateChecksum()` to use `Shopware\Core\Framework\Util\Hasher::hash()` and its default `xxh128` algorithm instead of `md5`
+    - Changed to use `Shopware\Core\Framework\Util\Hasher::hash()` for every use of hashing in `SwagMigrationAssistant\**\*`
+
+- [BREAKING] [#82](https://github.com/shopware/SwagMigrationAssistant/pull/82) - refactor!: change swag migration mapping
+    - [BREAKING] Renamed table column `entity_uuid` of `swag_migration_mapping` to `entity_id` with `SwagMigrationAssistant\Core\Migration\Migration1762346793RenameColumnOfMappingTable`
+    - [BREAKING] Changed field `entityUuid` to `entityId` in `SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition` and `SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingEntity`
+    - [BREAKING] Renamed every occurrence of `entityUuid` to `entityId` in `SwagMigrationAssistant\**\*`, most relevant for:
+        - `SwagMigrationAssistant\Migration\Mapping\MappingService`
+        - `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface`
+        - `SwagMigrationAssistant\Profile\Shopware\Converter\**\*`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\**\*`
+
+- [BREAKING] [#79](https://github.com/shopware/SwagMigrationAssistant/pull/79) - refactor!: remove validation from converter
+    - [BREAKING] Changed method `convert()` of `SwagMigrationAssistant\Migration\Converter\ConverterInterface` to have nullable return type of `?ConverterStruct`
+
+- [BREAKING] [#77](https://github.com/shopware/SwagMigrationAssistant/pull/77) - feat!: add acl constraints
+    - Added acl privilege mapping to `src/Resources/app/administration/src/module/swag-migration/acl/index.ts`
+    - [BREAKING] Added acl constraint for route `/migration/get-grouped-logs-of-run` from `SwagMigrationAssistant\Controller\HistoryController::getGroupedLogsOfRun()` requiring privilege `swag_migration.viewer`
+    - [BREAKING] Added acl constraint for route `/migration/download-logs-of-run` from `SwagMigrationAssistant\Controller\HistoryController::downloadLogsOfRun()` requiring privilege `swag_migration.viewer`
+    - [BREAKING] Added acl constraint for route `/migration/generate-premapping` from `SwagMigrationAssistant\Controller\PremappingController::generatePremapping()` requiring privilege `swag_migration.editor`
+    - [BREAKING] Added acl constraint for route `/migration/write-premapping` from `SwagMigrationAssistant\Controller\PremappingController::writePremapping()` requiring privilege `swag_migration.editor`
+    - [BREAKING] Added acl constraint for route `/migration/get-profile-information` from `SwagMigrationAssistant\Controller\StatusController::getProfileInformation()` requiring privilege `swag_migration.viewer`
+    - [BREAKING] Added acl constraint for route `/migration/get-profiles` from `SwagMigrationAssistant\Controller\StatusController::getProfiles()` requiring privilege `swag_migration.viewer`
+    - [BREAKING] Added acl constraint for route `/migration/get-gateways` from `SwagMigrationAssistant\Controller\StatusController::getGateways()` requiring privilege `swag_migration.viewer`
+    - [BREAKING] Added acl constraint for route `/migration/data-selection` from `SwagMigrationAssistant\Controller\StatusController::getDataSelection()` requiring privilege `swag_migration.editor`
+    - [BREAKING] Added acl constraint for route `/migration/check-connection` from `SwagMigrationAssistant\Controller\StatusController::getDataSelection()` requiring privilege `swag_migration.viewer`
+    - [BREAKING] Added acl constraint for route `/migration/start-migration` from `SwagMigrationAssistant\Controller\StatusController::startMigration()` requiring privilege `swag_migration.creator`
+    - [BREAKING] Added acl constraint for route `/migration/get-state` from `SwagMigrationAssistant\Controller\StatusController::getState()` requiring privilege `swag_migration.viewer`
+    - [BREAKING] Added acl constraint for route `/migration/approve-finished` from `SwagMigrationAssistant\Controller\StatusController::approveFinishedMigration()` requiring privilege `swag_migration.editor`
+    - [BREAKING] Added acl constraint for route `/migration/abort-migration` from `SwagMigrationAssistant\Controller\StatusController::abortMigration()` requiring privilege `swag_migration.editor`
+    - [BREAKING] Added acl constraint for route `/migration/reset-checksums` from `SwagMigrationAssistant\Controller\StatusController::resetChecksums()` requiring privilege `swag_migration.deleter`
+    - [BREAKING] Added acl constraint for route `/migration/cleanup-migration-data` from `SwagMigrationAssistant\Controller\StatusController::cleanupMigrationData()` requiring privilege `swag_migration.deleter`
+    - [BREAKING] Added acl constraint for route `/migration/is-truncating-migration-data` from `SwagMigrationAssistant\Controller\StatusController::isTruncatingMigrationData()` requiring privilege `swag_migration.viewer`
+    - [BREAKING] Added acl constraint for route `/migration/is-resetting-checksums` from `SwagMigrationAssistant\Controller\StatusController::isResettingChecksums()` requiring privilege `swag_migration.viewer`
+
+- [#76](https://github.com/shopware/SwagMigrationAssistant/pull/76) - feat: add any json field
+    - Added DAL Field class `SwagMigrationAssistant\Core\Field\AnyJsonField` to handle JSON data with any structure
+    - Added DAL Field Serializer class `SwagMigrationAssistant\Core\Field\AnyJsonFieldSerializer` to encode and decode `AnyJsonField` data
+
+- [BREAKING] [#74](https://github.com/shopware/SwagMigrationAssistant/pull/74) - feat!: split message queue process
+    - [BREAKING] Changed method `getProcessor()` of `SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessorRegistry` to return `null` if no processor is needed for the given migration step
+    - Added route `/migration/resume-after-fixes` to `SwagMigrationAssistant\Controller\StatusController::resumeAfterFixes()` to resume migration after user applied fixes in error resolution step
+    - Added migration step `error-resolution` to `SwagMigrationAssistant\Migration\Run\MigrationStep`
+    - Added method `needsProcessor()` to `SwagMigrationAssistant\Migration\Run\MigrationStep` to indicate if a migration step needs a message queue processor
+    - Added required method `resumeAfterFixes()` to `SwagMigrationAssistant\Migration\Run\RunServiceInterface` and implementation `SwagMigrationAssistant\Migration\Run\RunService` to resume migration after user applied fixes in error resolution step
+    - Changed order of migration steps in `src/Resources/app/administration/src/module/swag-migration/page/swag-migration-process-screen/index.ts`
+
+- [#64](https://github.com/shopware/SwagMigrationAssistant/pull/64) - fix: adjust log file generation
+    - Changed log time format from `d.m.Y h:i:s e` to `Y-m-d H:i:s T` in `SwagMigrationAssistant\Migration\History\HistoryService`
+    - Adjusted log file generation in `SwagMigrationAssistant\Migration\History\HistoryService` to include new required & optional fields of migration logs and removed truncated fields
+
+- [BREAKING] [#63](https://github.com/shopware/SwagMigrationAssistant/pull/63) - feat!: apply fixes prototype
+    - Added class `SwagMigrationAssistant\Migration\ErrorResolution\MigrationFix` to represent a migration fix
+    - Added class `SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService` to manage migration fixes
+    - [BREAKING] Added argument `$errorResolutionService` to constructor of `SwagMigrationAssistant\Migration\Service\MigrationDataWriter`
+    - [BREAKING] Changed method `writeData(...)` of `SwagMigrationAssistant\Migration\Service\MigrationDataWriter` to apply migration fixes before data writing calling `SwagMigrationAssistant\Migration\ErrorResolution::applyFixes(...)`
+
+- [BREAKING] [#60](https://github.com/shopware/SwagMigrationAssistant/pull/60) - chore!: drop migration cli commands
+    - [BREAKING] Removed command `migration:abort` from `SwagMigrationAssistant\Command\AbortMigrationCommand` in favor of message queue based execution
+    - [BREAKING] Removed command `migration:get-progress` from `SwagMigrationAssistant\Command\GetMigrationProgressCommand` in favor of message queue based execution
+    - [BREAKING] Removed command `migration:start` from `SwagMigrationAssistant\Command\StartMigrationCommand` in favor of message queue based execution
+
+- [#58](https://github.com/shopware/SwagMigrationAssistant/pull/58) - refactor: use meteor tokens
+    - Replaced hardcoded colors, spacing, font-sizes, etc. and polished styling in administration components with [meteor tokens](https://shopware.design/tokens) for unified styling
+    - Removed unused component `swag-migration-expand-div`
+
+- [BREAKING] [#57](https://github.com/shopware/SwagMigrationAssistant/pull/57) - feat!: checksum and reset via mq
+    - Added new message `SwagMigrationAssistant\Migration\MessageQueue\Message\ResetChecksumMessage` to trigger checksum reset via message queue
+    - [BREAKING] Renamed message `SwagMigrationAssistant\Migration\MessageQueue\Message\CleanupMigrationMessage` to `TruncateMigrationMessage` for consistency
+    - Changed `StatusController::resetChecksums()` it now dispatches `ResetChecksumMessage` to message bus instead of executing directly
+    - Changed `StatusController::cleanupMigrationData()` it now dispatches `TruncateMigrationMessage` to message bus instead of executing directly
+    - Added `StatusController::isResettingChecksums()` and route `/migration/is-resetting-checksums` to check if checksum reset is in progress
+    - Added column `is_resetting_checksums` to `swag_migration_general_setting` to store checksum reset state with `SwagMigrationAssistant\Core\Migration\Migration1759000000AddIsResettingChecksumsToSetting`
+    - Removed `$runService` argument from constructor of `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbortingProcessor`
+    - Changed name of `$dbalConnection` constructor argument of `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\CleanUpProcessor` to `$connection` for consistency
+    - Added new message queue Handler class `SwagMigrationAssistant\Migration\MessageQueue\Handler\ResetChecksumHandler` to handle checksum reset message `ResetChecksumMessage`
+    - [BREAKING] Renamed `SwagMigrationAssistant\Migration\MessageQueue\Handler\CleanupMigrationHandler` to `TruncateMigrationHandler` for consistency
+    - Added polling logic to `src/Resources/app/administration/src/module/swag-migration/component/card/swag-migration-shop-information/swag-migration-shop-information.html.twig` to check if checksum reset or migration truncate is in progress
+    - [BREAKING] Removed argument `$migrationDataDefinition` from constructor of `SwagMigrationAssistant\Migration\Run\RunService` as it is no longer needed
+    - [BREAKING] Renamed method `cleanupMappingChecksums()` of `SwagMigrationAssistant\Migration\Run\RunService` to `startCleanupMappingChecksums()` to indicate that it starts the process via message queue
+    - [BREAKING] Renamed method `cleanupMigrationData()` of `SwagMigrationAssistant\Migration\Run\RunService` to `startTruncateMigrationData()` to indicate that it starts the process via message queue
+    - [BREAKING] Renamed method and route `StatusController::isResettingChecksums()` to `isTruncatingMigrationData()` and `/migration/is-truncating-migration-data` to check if migration data truncation is in progress
+    - [BREAKING] Renamed method `cleanupMappingChecksums()` to `startCleanupMappingChecksums()` in `SwagMigrationAssistant\Migration\Run\RunServiceInterface` and implementation `SwagMigrationAssistant\Migration\Run\RunService`
+    - [BREAKING] Renamed method `cleanupMigrationData()` to `startTruncateMigrationData()` in `SwagMigrationAssistant\Migration\Run\RunServiceInterface` and implementation `SwagMigrationAssistant\Migration\Run\RunService`
+
+- [#56](https://github.com/shopware/SwagMigrationAssistant/pull/56) - feat: add migration fixes table
+    - Added new entity `SwagMigrationFixEntity`, definition `SwagMigrationFixDefinition` and collection `SwagMigrationFixCollection` to store available migration fixes
+    - Added new table `swag_migration_fix` with `SwagMigrationAssistant\Core\Migration\Migration1757598733AddMigrationFixesTable`
+
+- [BREAKING] [#53](https://github.com/shopware/SwagMigrationAssistant/pull/53) - feat!: add error resolution ui
+    - [BREAKING] Added argument `$logGroupingService` to constructor of `SwagMigrationAssistant\Controller\HistoryController`
+    - [BREAKING] Changed method signature of `SwagMigrationAssistant\Migration\Gateway\GatewayRegistry::getGateways()` and `GatewayRegistryInterface` to require `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `$run` property and method `getRun()` return type of `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity` to be nullable
+    - Added new service `SwagMigrationAssistant\Migration\History\LogGroupingService` to group migration logs by entity and source id for error resolution step
+    - Added route `/migration/get-log-groups` to `SwagMigrationAssistant\Controller\HistoryController::getLogGroups()` to fetch grouped migration logs for error resolution step
+    - Added route `/migration/get-all-log-ids` to `SwagMigrationAssistant\Controller\HistoryController::getAllLogIds()` to fetch all log ids of a migration run for error resolution step
+    - Added new administration service `src/module/swag-migration/service/swag-migration-error-resolution.service.ts`
+    - Added new administration components to `src/module/swag-migration/component/swag-migration-error-resolution/**/*`:
+        - `swag-migration-error-resolution-step`
+        - `swag-migration-error-resolution-modal`
+        - `swag-migration-error-resolution-details-modal`
+        - `swag-migration-error-resolution-log-filter`
+        - `swag-migration-error-resolution-field`
+        - `swag-migration-error-resolution-field-relation`
+        - `swag-migration-error-resolution-field-scalar`
+        - `swag-migration-error-resolution-field-unhandled`
+
+- [BREAKING] [#51](https://github.com/shopware/SwagMigrationAssistant/pull/51) - feat!: add migration validation of converted data
+    - [BREAKING] Added validation check of converted data to `convertData(...)` method in `SwagMigrationAssistant\Migration\Service\MigrationDataConverter`
+    - Added new service `SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService` to validate converted data against Shopware's data definitions
+    - Added new events `SwagMigrationAssistant\Migration\Validation\Event\MigrationPreValidationEvent` and `SwagMigrationAssistant\Migration\Validation\Event\MigrationPostValidationEvent` to allow extensions to hook into the validation process
+    - Added new log classes `ValidationInvalidFieldValueLog`, `ValidationInvalidForeignKeyLog`, `ValidationMissingRequiredFieldLog` and `ValidationUnexpectedFieldLog` to log validation errors
+    - Added new context class `SwagMigrationAssistant\Migration\Validation\MigrationValidationContext` to pass validation related data
+    - Added new result class `SwagMigrationAssistant\Migration\Validation\MigrationValidationResult` to collect validation results
+    - Added new service `SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService` to validate converted data against Shopware's data definitions in three steps:
+        - Entity structure: Check for unexpected fields
+        - Field Validation: Check for missing required fields and invalid field values
+        - Association Validation: Check for invalid foreign keys
+
+- [#49](https://github.com/shopware/SwagMigrationAssistant/pull/49) - feat: fill logs with meaningful data
+    - Added more meaningful data to log entries created in `SwagMigrationAssistant\Profile\Shopware\Logging\*` classes
+    - Added `MigrationLogBuilder` usage across SwagMigrationAssistant to create logs in a consistent way
+
+- [#42](https://github.com/shopware/SwagMigrationAssistant/pull/42) - feat: refactor connection credentials page
+    - Removed component `swag-migration-wizard-page-profile-information` as its step `profileInformation` in the connection wizard was removed
+
+- [BREAKING] [#43](https://github.com/shopware/SwagMigrationAssistant/pull/43) refactor!: migration connection usage
+    - [BREAKING] Changed signature of method `supports()` in `SwagMigrationAssistant\Migration\Gateway\GatewayInterface` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
+    - [BREAKING] Changed signature of method `getGateways()` in `SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
+    - [BREAKING] Changed signature of method `getGateways()` in `SwagMigrationAssistant\Migration\Gateway\GatewayRegistry` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
+    - [BREAKING] Changed signature of constructor method of `SwagMigrationAssistant\Migration\MigrationContext` to require `SwagMigrationConnectionEntity` and additional optional parameter of `ProfileInterface` with default value `null`
+    - Added methods `setProfile()`, `getGateway()`, `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContextInterface`
+    - Added methods `setProfile()`, `getGateway()`, `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContext`
+    - Added null checks to methods `getProfile()` and `getGateway()` in `SwagMigrationAssistant\Migration\MigrationContext` to ensure that a profile and gateway is set before usage
+
+- [BREAKING] [#40](https://github.com/shopware/SwagMigrationAssistant/pull/40) - refactor!: add migration logging optional fields
+    - [BREAKING] Replaced `SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntity` with `SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry`
+    - [BREAKING] Replaced `SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface` with `SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry`
+    - [BREAKING] Updated all log implementations in `SwagMigrationAssistant\Migration\Logging\Log\*` and `SwagMigrationAssistant\Profile\**\Logging\*`:
+        - extend `SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry` instead of `SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntity`
+        - implement `SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry` instead of `SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface`
+        - mark class readonly
+    - [BREAKING] Renamed log classes to include `Log` suffix
+        - `SwagMigrationAssistant\Migration\Logging\LogCannotConvertChildEntity`,
+        - `SwagMigrationAssistant\Migration\Logging\LogCannotConvertEntity`,
+        - `SwagMigrationAssistant\Migration\Logging\LogDocumentTypeNotSupported`,
+        - `SwagMigrationAssistant\Migration\Logging\LogInvalidUnserializedData`,
+        - `SwagMigrationAssistant\Migration\Logging\LogRunAbortedAutomatically`
+        - `SwagMigrationAssistant\Migration\Logging\LogUnsupportedObjectType`
+    - [BREAKING] Change method `addLogEntry()` of `SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface` and implementation `LoggingService` to require `MigrationLogEntry` as parameter instead of `LogEntryInterface`
+    - Created `SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder` to build log entries of type `MigrationLogEntry`
+    - Added columns to `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754897550AddRequiredFieldsToMigrationLogs`:
+        - `entity_name`
+        - `entity_id`
+        - `field_name`
+        - `field_source_path`
+        - `source_data`
+        - `converted_data`
+        - `exception_message`
+        - `exception_trace`
+    - Added fields to `swag_migration_logging` to log definition `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition`:
+        - `entity_name`
+        - `field_name`
+        - `field_source_path`
+        - `source_data`
+        - `converted_data`
+        - `used_mapping`
+        - `exception_message`
+        - `exception_trace`
+    - Added properties and methods to log entity `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity`:
+        - `entityName` and `getEntityName()`
+        - `fieldName` and `getFieldName()`
+        - `fieldSourcePath` and `getFieldSourcePath()`
+        - `sourceData` and `getSourceData()`
+        - `convertedData` and `getConvertedData()`
+        - `usedMapping` and `getUsedMapping()`
+        - `exceptionMessage` and `getExceptionMessage()`
+        - `exceptionTrace` and `getExceptionTrace()`
+
+- [BREAKING] [#39](https://github.com/shopware/SwagMigrationAssistant/pull/39) - refactor!: convert to ts
+    - [BREAKING] Changed all javascript files in `src/Resources/app/administration/**/*` to typescript files
+    - [BREAKING] Moved `src/core/data/migration.store.js` into owning module `src/module/swag-migration/store/migration.store.ts`
+    - Introduced `Shopware.Component.wrapComponentConfig(...)` to wrap component configurations for all components
+    - Introduced usage of [meteor tokens](https://shopware.design/tokens) for unified styling
+    - Removed dynamic profile component loading from `src/module/swag-migration/profile/index.js` in favor of static imports
+    - Added `src/type/types.d.ts` to define shared types across the administration modules
+    - Removed old configurations from `src/app/administration/**`
+    - Added `prettier` configuration to `.prettierrc.json` for consistent code formatting
+
+- [BREAKING] [#38](https://github.com/shopware/SwagMigrationAssistant/pull/38) - feat!: add migration logging required fields
+    - [BREAKING] Truncated database entries of `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754896654TruncateMigrationLogs`
+    - [BREAKING] Deleted columns `title`, `description`, `parameters`, `title_snippet`, `description_snippet`, `entity` and `source_id` from `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754897550AddRequiredFieldsToMigrationLogs`
+    - [BREAKING] Removed fields `title`, `description`, `parameters`, `title_snippet`, `description_snippet`, `entity` and `source_id` from log definition `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition`
+    - [BREAKING] Removed properties `title`, `description`, `parameters`, `titleSnippet`, `descriptionSnippet`, `entity` and `sourceId` from log entity `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity`
+    - [BREAKING] Removed aggregations of `titleSnippet`, `entity` and `level` in `SwagMigrationAssistant\Migration\History\HistoryService`
+    - [BREAKING] Updated all log implementations in `SwagMigrationAssistant\Migration\Logging\Log\*` and `SwagMigrationAssistant\Profile\**\Logging\*`:
+        - deleted methods `getTitle()`, `getTitleSnippet()`, `getDescription()`, `getDescriptionSnippet()`, `getParameters()`, `getSourceId()`
+        - add method `isUserFixable()`
+    - Added columns `profile_name`, `gateway_name` and `user_fixable` to `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754897550AddRequiredFieldsToMigrationLogs`
+    - Added fields `profile_name`, `gateway_name` and `user_fixable` to log definition `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition`
+    - Added properties `profileName`, `gatewayName` and `userFixable` to log entity `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity`
+
+# 15.0.4
+
+- Media processing has been simplified. It's no longer done in parallel messages. The migration UI reflects the media migration progress more accurately. When the step is marked as complete, all media are migrated. No need to wait for additional messages to finish.
+
+# 14.0.0
+
+- [BREAKING] MIG-1053 - Removed ability to set the `verify` flag for the guzzle API client. This is now always true by default.
+- [BREAKING] MIG-1053 - Refactored both Shopware 5 and Shopware 6 EnvironmentReader classes to provide more information about exceptions.
+- MIG-894 - Optimizes the mapping performance for the migration which results in a significantly faster converting step.
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup` to replace the removed method `getCountryUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup` to replace the removed method `getCountryStateUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup` to replace the removed method `getCurrencyUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup` to replace the removed method `getDefaultCmsPageUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup` to replace the removed method `getDeliveryTime`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup` to replace the removed method `getDocumentTypeUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup` to replace the removed method `getLanguageUuid` and `getDefaultLanguage`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup` to replace the removed method `getLocaleUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\LowestRootCategoryLookup` to replace the removed method `getLowestRootCategoryUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup` to replace the removed method `getDefaultFolderIdByEntity`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup` to replace the removed method `getThumbnailSizeUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup` to replace the removed method `getNumberRangeUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup` to replace the removed method `getTaxUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\SeoUrlTemplateLookup` to replace the removed method `getSeoUrlTemplateUuid`
+    - [BREAKING] Added new constructor parameter `LowestRootCategoryLookup $lowestRootCategoryLookup`, `DefaultCmsPageLookup $defaultCmsPageLookup`, `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\CategoryConverter`
+    - [BREAKING] Added new constructor parameter `CurrencyLookup $currencyLookup`, `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\CurrencyConverter`
+    - [BREAKING] Added new constructor parameter `CountryLookup $countryLookup`, `LanguageLookup $languageLookup`, `CountryStateLookup $countryStateLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\CustomerConverter`
+    - [BREAKING] Added new constructor parameter `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\CustomerGroupConverter`
+    - [BREAKING] Added new constructor parameter `LanguageLookup $languageLookup`, `LocaleLookup $localeLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\LanguageConverter`
+    - [BREAKING] Added new constructor parameter `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\MediaConverter`
+    - [BREAKING] Added new constructor parameter `MediaDefaultFolderLookup $mediaFolderLookup`, `MediaThumbnailSizeLookup $mediaThumbnailSizeLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\MediaFolderConverter`
+    - [BREAKING] Added new constructor parameter `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\NewsletterRecipientConverter`
+    - [BREAKING] Added new constructor parameter `NumberRangeLookup $numberRangeLookup`, `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\NumberRangeConverter`
+    - [BREAKING] Added new constructor parameter `CountryLookup $countryLookup`, `CurrencyLookup $currencyLookup`, `LanguageLookup $languageLookup`, `CountryStateLookup $countryStateLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
+    - [BREAKING] Added new constructor parameter `MediaDefaultFolderLookup $mediaFolderLookup`, `DocumentTypeLookup $documentTypeLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter`
+    - [BREAKING] Added new constructor parameter `TaxLookup $taxLookup`, `MediaDefaultFolderLookup $mediaFolderLookup`, `LanguageLookup $languageLookup`, `DeliveryTimeLookup $deliveryTimeLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\ProductConverter`
+    - [BREAKING] Added new constructor parameter `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\ProductReviewConverter`
+    - [BREAKING] Added new constructor parameter `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter`
+    - [BREAKING] Added new constructor parameter `CurrencyLookup $currencyLookup`, `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\SalesChannelConverter`
+    - [BREAKING] Added new constructor parameter `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\SeoUrlConverter`
+    - [BREAKING] Added new constructor parameter `CountryLookup $countryLookup`, `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter`
+    - [BREAKING] Added new constructor parameter `LanguageLookup $languageLookup` to `SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter`
+    - [BREAKING] Added new constructor parameter `CountryLookup $countryLookup` to `\SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter`
+    - [BREAKING] Added new constructor parameter `CountryStateLookup $countryStateLookup` to `\SwagMigrationAssistant\Profile\Shopware6\Converter\CountryStateConverter`
+    - [BREAKING] Added new constructor parameter `CurrencyLookup $currencyLookup` to `\SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter`
+    - [BREAKING] Added new constructor parameter `DeliveryTimeLookup $deliveryTimeLookup` to `\SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter`
+    - [BREAKING] Added new constructor parameter `DocumentTypeLookup $documentTypeLookup` to `\SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter`
+    - [BREAKING] Added new constructor parameter `DocumentTypeLookup $documentTypeLookup` to `\SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter`
+    - [BREAKING] Added new constructor parameter `LanguageLookup $languageLookup`, `LocaleLookup $localeLookup` to `\SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter`
+    - [BREAKING] Added new constructor parameter `MediaDefaultFolderLookup $mediaFolderLookup`, `MediaThumbnailSizeLookup $mediaThumbnailSizeLookup` to `\SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter`
+    - [BREAKING] Added new constructor parameter `NumberRangeLookup $numberRangeLookup` to `\SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter`
+    - [BREAKING] Added new constructor parameter `SeoUrlTemplateLookup $seoUrlTemplateLookup` to `\SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter`
+    - [BREAKING] Removed method `getDefaultCmsPageUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup::get()` instead.
+    - [BREAKING] Removed method `getLanguageUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup::get()` instead.
+    - [BREAKING] Removed method `getLocaleUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup::get()` instead.
+    - [BREAKING] Removed method `getDefaultLanguage` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup::getDefaultLanguageEntity()` instead.
+    - [BREAKING] Removed method `getDeliveryTime` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup::get()` instead.
+    - [BREAKING] Removed method `getCountryUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup::get()` instead.
+    - [BREAKING] Removed method `getCountryStateUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup::get()` instead.
+    - [BREAKING] Removed method `getCurrencyUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup::get()` instead.
+    - [BREAKING] Removed method `getCurrencyUuidWithoutMapping` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup::get()` instead.
+    - [BREAKING] Removed method `getTaxUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup::get()` instead.
+    - [BREAKING] Removed method `getNumberRangeUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup::get()` instead.
+    - [BREAKING] Removed method `getDefaultFolderIdByEntity` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup::get()` instead.
+    - [BREAKING] Removed method `getThumbnailSizeUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup::get()` instead.
+    - [BREAKING] Removed method `getDocumentTypeUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup::get()` instead.
+    - [BREAKING] Removed method `getLowestRootCategoryUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\LowestRootCategoryLookup::get()` instead.
+    - [BREAKING] Change signature of function `writeMapping` from `public function writeMapping(Context $context): void;` to `public function writeMapping(): void;` in `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors.
+    - [BREAKING] Removed constructor parameter `EntityRepository $localeRepository`, `EntityRepository $languageRepository`, `EntityRepository $countryRepository`, `EntityRepository $currencyRepository`, `EntityRepository $taxRepo`, `EntityRepository $numberRangeRepo`, `EntityRepository $ruleRepo`, `EntityRepository $thumbnailSizeRepo`, `EntityRepository $mediaDefaultRepo`, `EntityRepository $categoryRepo`, `EntityRepository $cmsPageRepo`, `EntityRepository $deliveryTimeRepo`, `EntityRepository $documentTypeRepo` from `\SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService`
+- MIG-1039 - [BREAKING] Added new method `getCountryStateUuid` to `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface`
+- MIG-1039 - [BREAKING] Added new constructor parameter `EntityRepository $countryStateRepo` to `SwagMigrationAssistant\Migration\Mapping\MappingService`
+- MIG-1049 - Made `connection` property of `SwagMigrationMappingEntity` optional
+- MIG-1071 - Moved functions which are only used in the magento migration plugin to the magento plugin
+    - [BREAKING] Removed method `createListItemMapping` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and move it to `\Swag\MigrationMagento\Migration\Mapping\MagentoMappingServiceInterface`.
+    - [BREAKING] Removed method `getUuidList` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and move it to `\Swag\MigrationMagento\Migration\Mapping\MagentoMappingServiceInterface`.
+- MIG-1072 - Move to the new Lookup service structure
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\CmsPageLookup` to replace the removed method `getCmsPageUuidByNames` and `mapLockedCmsPageUuidByNameAndType`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup` to replace the removed method `getGlobalDocumentBaseConfigUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\MailTemplateTypeLookup` to replace the removed method `getMailTemplateTypeUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup` to replace the removed method `getNumberRangeTypeUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\ProductSortingLookup` to replace the removed method `getProductSortingUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\SalutationLookup` to replace the removed method `getSalutationUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\StateMachineStateLookup` to replace the removed method `getStateMachineStateUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\SystemConfigLookup` to replace the removed method `getSystemConfigUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\SystemDefaultMailTemplateLookup` to replace the removed method `getSystemDefaultMailTemplateUuid`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\TaxRuleLookup` to replace the removed method `getTaxRuleUuidByCriteria`
+    - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\TaxRuleTypeLookup` to replace the removed method `getTaxRuleTypeUuidByCriteria`
+    - [BREAKING] Added new constructor parameter `CmsPageLookup $cmsPageLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\CmsPageConverter`
+    - [BREAKING] Added new constructor parameter `CountryLookup $countryLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter`
+    - [BREAKING] Added new constructor parameter `CountryStateLookup $countryStateLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\CountryStateConverter`
+    - [BREAKING] Added new constructor parameter `CurrencyLookup $currencyLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter`
+    - [BREAKING] Added new constructor parameter `DeliveryTimeLookup $deliveryTimeLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter`
+    - [BREAKING] Added new constructor parameter `DocumentTypeLookup $documentTypeLookup`, `GlobalDocumentBaseConfigLookup $globalDocumentBaseConfigLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter`
+    - [BREAKING] Added new constructor parameter `DocumentTypeLookup $documentTypeLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter`
+    - [BREAKING] Added new constructor parameter `MailTemplateTypeLookup $mailTemplateTypeLookup`, `SystemDefaultMailTemplateLookup $systemDefaultMailTemplateLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter`
+    - [BREAKING] Added new constructor parameter `NumberRangeTypeLookup $numberRangeTypeLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter`
+    - [BREAKING] Added new constructor parameter `StateMachineStateLookup $stateMachineStateLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter`
+    - [BREAKING] Added new constructor parameter `SystemConfigLookup $systemConfigLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\PageSystemConfigConverter`
+    - [BREAKING] Added new constructor parameter `ProductSortingLookup $productSortingLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductSortingConverter`
+    - [BREAKING] Added new constructor parameter `SalutationLookup $salutationLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter`
+    - [BREAKING] Added new constructor parameter `SeoUrlTemplateLookup $seoUrlTemplateLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter`
+    - [BREAKING] Added new constructor parameter `SystemConfigLookup $systemConfigLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\SystemConfigConverter`
+    - [BREAKING] Added new constructor parameter `TaxLookup $taxLookup` to `SwagMigrationAssistant\Profile\Shopware6\Converter\TaxConverter`
+    - [BREAKING] Changed constructor parameter from `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` to `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` in
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryAssociationConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryCmsPageAssociationConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryProductStreamAssociationConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CmsPageConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CountryStateConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CrossSellingConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerGroupConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerWishlistConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CustomFieldSetConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentInheritanceConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\MediaConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderInheritanceConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\NewsletterRecipientConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\PageSystemConfigConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductFeatureSetConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductManufacturerConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductReviewConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductSortingConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamFilterInheritanceConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\PromotionConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\PropertyGroupConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\RuleConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelDomainConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ShippingMethodConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetSetConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SystemConfigConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\TaxConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\TaxRuleConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter`
+    - [BREAKING] Removed `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` and implementors. Use `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and services in `SwagMigrationAssistant\Migration\Mapping\Lookup` instead.
+- MIG-1087 - Fixed an issue for the migration of media folders from SW6->SW6, where the default folder id was set wrongly. This includes changes to the way the folder structure is migrated
+    - [BREAKING] Removed `ReaderInterface` from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader`. All Reader classes extending this class now have to implement that interface themselves
+    - [BREAKING] Removed `$connection` property from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader`. It is now private and can be retrieved by calling `getConnection`
+    - [BREAKING] Changed `$connectionFactory` property in `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader` to private
+    - [BREAKING] Removed `setConnection` method from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader`. Use `getConnection` instead
+    - [BREAKING] Changed `addTableSelection` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader` to include `MigrationContextInterface` as last parameter
+    - [BREAKING] Changed `fetchIdentifiers` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader` to include `MigrationContextInterface` as first parameter
+    - [BREAKING] Changed `getDefaultShopLocale` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AttributeReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CategoryAttributeReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerAttributeReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerGroupAttributeReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ManufacturerAttributeReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\OrderAttributeReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\OrderDocumentAttributeReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductAttributeReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductPriceAttributeReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed return type of `createApiClient` method in `\SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory` to never return null. It might throw an `MigrationException` instead
+    - [BREAKING] Changed return type of `createDatabaseConnection` method in `\SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory` to never return null. It might throw an `MigrationException` instead
+    - [BREAKING] Changed return type of `createApiClient` method in `\SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface` to never return null. It might throw an `MigrationException` instead
+    - [BREAKING] Changed return type of `createDatabaseConnection` method in `\SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface` to never return null. It might throw an `MigrationException` instead
+    - [BREAKING] Changed `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader` to extend from `AbstractReader`
+    - [BREAKING] Removed `$connection` property from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader`. it can be retrieved by calling `getConnection` from the parent `AbstractReader`
+    - [BREAKING] Removed `$connectionFactory` property from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader`. it can be retrieved by calling `getConnection` from the parent `AbstractReader`
+    - [BREAKING] Changed `getDefaultCurrency` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader` to include `MigrationContextInterface` as parameter
+    - [BREAKING] Changed `fetchData` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductPropertyRelationReader` to be private instead of public
+    - [BREAKING] Changed `getEsdConfig` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader` to be private instead of public
+    - [BREAKING] Changed `fetchMainCategoryShops` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader` to be private instead of public
+    - [BREAKING] Changed `appendAssociatedData` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader` to be private instead of protected
+    - [BREAKING] Changed `buildIdentifierMappings` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader` to be private instead of protected
+    - [BREAKING] Changed `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader` to extend from `AbstractReader`
+    - [BREAKING] Removed `$connectionFactory` property from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader`. it can be retrieved by calling `getConnection` from the parent `AbstractReader`
+- MIG-1091 - Fixed small errors in the service container definition

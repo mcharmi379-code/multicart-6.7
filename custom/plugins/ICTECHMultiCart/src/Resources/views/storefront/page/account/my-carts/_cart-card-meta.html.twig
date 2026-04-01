@@ -1,0 +1,29 @@
+<div class="ictech-account-carts__meta">
+    <div>
+        <span>{{ 'ictech-multi-cart.account.itemsLabel'|trans }}</span>
+        <strong>{{ cart.itemCount }}</strong>
+    </div>
+    <div>
+        <span>{{ 'ictech-multi-cart.account.subtotalLabel'|trans }}</span>
+        <strong data-ictech-cart-subtotal>{{ cart.subtotal|currency(cart.currencyIso) }}</strong>
+    </div>
+    {% if cart.promotionDiscount > 0 %}
+        <div data-ictech-cart-discount-row>
+            <span>{{ 'ictech-multi-cart.account.discountLabel'|trans }}</span>
+            <strong data-ictech-cart-discount>-{{ cart.promotionDiscount|currency(cart.currencyIso) }}</strong>
+        </div>
+    {% else %}
+        <div hidden data-ictech-cart-discount-row>
+            <span>{{ 'ictech-multi-cart.account.discountLabel'|trans }}</span>
+            <strong data-ictech-cart-discount></strong>
+        </div>
+    {% endif %}
+    <div>
+        <span>{{ 'ictech-multi-cart.account.totalLabel'|trans }}</span>
+        <strong data-ictech-cart-total-display>{{ cart.total|currency(cart.currencyIso) }}</strong>
+    </div>
+    <div>
+        <span>{{ 'ictech-multi-cart.account.statusLabel'|trans }}</span>
+        <strong>{{ cart.status|capitalize }}</strong>
+    </div>
+</div>

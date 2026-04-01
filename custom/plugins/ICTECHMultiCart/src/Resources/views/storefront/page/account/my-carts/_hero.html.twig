@@ -1,0 +1,51 @@
+<section class="ictech-account-carts__hero">
+    <div class="ictech-account-carts__hero-top">
+        <div>
+            <p class="ictech-account-carts__eyebrow">{{ 'ictech-multi-cart.account.heroEyebrow'|trans }}</p>
+            <h1>{{ 'ictech-multi-cart.account.title'|trans }}</h1>
+            <p>{{ 'ictech-multi-cart.account.subtitle'|trans }}</p>
+        </div>
+
+        <button type="button"
+                class="ictech-account-carts__btn ictech-account-carts__btn--ghost"
+                data-ictech-create-cart-toggle
+                {% if not multiCartState.canCreateCart %}disabled{% endif %}>
+            {% sw_icon 'plus-circle' style { size: 'sm', ariaHidden: true } %}
+            <span>{{ 'ictech-multi-cart.account.createButton'|trans }}</span>
+        </button>
+    </div>
+
+    <div class="ictech-account-carts__summary">
+        <div class="ictech-account-carts__metric">
+            <span class="ictech-account-carts__metric-label">{{ 'ictech-multi-cart.account.summary.cartCount'|trans }}</span>
+            <span class="ictech-account-carts__metric-value">{{ carts|length }}</span>
+        </div>
+        <div class="ictech-account-carts__metric">
+            <span class="ictech-account-carts__metric-label">{{ 'ictech-multi-cart.account.summary.activeCart'|trans }}</span>
+            <span class="ictech-account-carts__metric-value" data-ictech-active-cart-name>{{ multiCartState.activeCart ? multiCartState.activeCart.name : '—' }}</span>
+        </div>
+        <div class="ictech-account-carts__metric">
+            <span class="ictech-account-carts__metric-label">{{ 'ictech-multi-cart.account.summary.totalItems'|trans }}</span>
+            <span class="ictech-account-carts__metric-value">{{ page.totalItems }}</span>
+        </div>
+    </div>
+
+    <div class="ictech-account-carts__helper">
+        {{ 'ictech-multi-cart.account.helper'|trans }}
+        {% if not multiCartState.checkoutPrefsEnabled %}
+            <br>{{ 'ictech-multi-cart.account.checkoutPrefsDisabled'|trans }}
+        {% elseif not multiCartState.multiPaymentEnabled %}
+            <br>{{ 'ictech-multi-cart.account.multiPaymentDisabled'|trans }}
+        {% endif %}
+    </div>
+
+    {% if not multiCartState.canCreateCart %}
+        <div class="alert alert-info mt-3 mb-0" role="status">
+            {% if multiCartState.createCartReason is same as('limit_reached') %}
+                {{ 'ictech-multi-cart.account.createLimitReached'|trans({'%limit%': multiCartState.maxCartsPerUser}) }}
+            {% else %}
+                {{ 'ictech-multi-cart.account.createUnavailable'|trans }}
+            {% endif %}
+        </div>
+    {% endif %}
+</section>

@@ -1,0 +1,21 @@
+{% block swag_migration_confirm_warning %}
+    <div class="swag-migration-confirm-warning">
+        <mt-banner
+            v-if="hasCurrencyMismatch"
+            class="swag-migration-confirm-warning__banner"
+            :title="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.title')"
+            variant="attention"
+        >
+            {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.text', { sourceSystemCurrency, targetSystemCurrency }, 0) }}
+        </mt-banner>
+
+        <mt-banner
+            v-if="hasLanguageMismatch"
+            class="swag-migration-confirm-warning__banner"
+            :title="$tc('swag-migration.index.confirmWarningCard.languageMismatch.title')"
+            variant="attention"
+        >
+            {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.text', { sourceSystemLanguage, targetSystemLanguage }, 0) }}
+        </mt-banner>
+    </div>
+{% endblock %}

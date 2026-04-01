@@ -1,0 +1,15 @@
+<ul class="ictech-account-carts__items">
+    {% for item in cart.items|slice(0, 3) %}
+        <li class="ictech-account-carts__item">
+            <span>
+                <strong>{{ item.productName }}</strong>
+                {{ item.productNumber }} x{{ item.quantity }}
+            </span>
+            <span>{{ item.totalPrice|currency(cart.currencyIso) }}</span>
+        </li>
+    {% else %}
+        <li class="ictech-account-carts__item">
+            <span>{{ 'ictech-multi-cart.account.noProducts'|trans }}</span>
+        </li>
+    {% endfor %}
+</ul>

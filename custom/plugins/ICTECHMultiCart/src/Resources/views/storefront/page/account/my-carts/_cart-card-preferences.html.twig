@@ -1,0 +1,59 @@
+<div class="ictech-account-carts__field">
+    <label>{{ 'ictech-multi-cart.account.shippingAddress'|trans }}</label>
+    <select class="ictech-account-carts__select" data-ictech-preference="shippingAddressId" data-cart-id="{{ cart.id }}">
+        <option value="">{{ 'ictech-multi-cart.account.selectPlaceholder'|trans }}</option>
+        {% for address in page.options.addresses %}
+            <option value="{{ address.id }}"{% if address.id is same as(cart.shippingAddressId) %} selected{% endif %}>{{ address.label }}</option>
+        {% endfor %}
+    </select>
+    <a href="{{ path('frontend.account.address.create.page', { redirectTo: 'frontend.ictech.multi_cart.account.page' }) }}" class="ictech-account-carts__helper-link" data-ictech-add-address data-ictech-address-target="shippingAddressId">
+        {{ 'ictech-multi-cart.account.addNewAddress'|trans }}
+    </a>
+</div>
+
+<div class="ictech-account-carts__field">
+    <label>{{ 'ictech-multi-cart.account.billingAddress'|trans }}</label>
+    <label class="ictech-account-carts__combined">
+        <input type="checkbox" value="1" {% if cart.billingAddressId and cart.billingAddressId is same as(cart.shippingAddressId) %}checked{% endif %} data-ictech-same-as-shipping>
+        <span>{{ 'ictech-multi-cart.account.sameAsShipping'|trans }}</span>
+    </label>
+    <select class="ictech-account-carts__select" data-ictech-preference="billingAddressId" data-cart-id="{{ cart.id }}">
+        <option value="">{{ 'ictech-multi-cart.account.selectPlaceholder'|trans }}</option>
+        {% for address in page.options.addresses %}
+            <option value="{{ address.id }}"{% if address.id is same as(cart.billingAddressId) %} selected{% endif %}>{{ address.label }}</option>
+        {% endfor %}
+    </select>
+    <a href="{{ path('frontend.account.address.create.page', { redirectTo: 'frontend.ictech.multi_cart.account.page' }) }}" class="ictech-account-carts__helper-link" data-ictech-add-address data-ictech-address-target="billingAddressId">
+        {{ 'ictech-multi-cart.account.addNewAddress'|trans }}
+    </a>
+</div>
+
+<div class="ictech-account-carts__field">
+    <label>{{ 'ictech-multi-cart.account.paymentMethod'|trans }}</label>
+    <select class="ictech-account-carts__select" data-ictech-preference="paymentMethodId" data-cart-id="{{ cart.id }}">
+        {% for method in page.options.paymentMethods %}
+            <option value="{{ method.id }}"{% if method.id is same as(cart.paymentMethodId) %} selected{% endif %}>{{ method.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="ictech-account-carts__field">
+    <label>{{ 'ictech-multi-cart.account.shippingMethod'|trans }}</label>
+    <select class="ictech-account-carts__select" data-ictech-preference="shippingMethodId" data-cart-id="{{ cart.id }}">
+        {% for method in page.options.shippingMethods %}
+            <option value="{{ method.id }}"{% if method.id is same as(cart.shippingMethodId) %} selected{% endif %}>{{ method.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+{% if page.state.promotionsEnabled %}
+    <div class="ictech-account-carts__field">
+        <label>{{ 'ictech-multi-cart.account.promoCode'|trans }}</label>
+        <div class="ictech-account-carts__promo-row">
+            <input class="ictech-account-carts__input" type="text" value="{{ cart.promotionCode ?? '' }}" placeholder="{{ 'ictech-multi-cart.account.promoPlaceholder'|trans }}" data-ictech-promotion-input data-cart-id="{{ cart.id }}">
+            <button type="button" class="ictech-account-carts__btn ictech-account-carts__btn--ghost" data-ictech-promotion-apply data-cart-id="{{ cart.id }}">{{ 'ictech-multi-cart.account.promoApply'|trans }}</button>
+            <button type="button" class="ictech-account-carts__btn ictech-account-carts__btn--ghost" data-ictech-promotion-remove data-cart-id="{{ cart.id }}">{{ 'ictech-multi-cart.account.promoRemove'|trans }}</button>
+        </div>
+        <p class="ictech-account-carts__promo-feedback" hidden data-ictech-promotion-feedback></p>
+    </div>
+{% endif %}

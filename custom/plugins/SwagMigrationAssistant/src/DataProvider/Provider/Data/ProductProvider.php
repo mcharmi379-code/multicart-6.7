@@ -1,0 +1,143 @@
+<?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace SwagMigrationAssistant\DataProvider\Provider\Data;
+
+use Shopware\Core\Content\Product\ProductCollection;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+
+#[Package('fundamentals@after-sales')]
+class ProductProvider extends AbstractProvider
+{
+    private const BUNDLE_PRODUCT_TYPE = 'grouped_bundle';
+
+    /**
+     * @param EntityRepository<ProductCollection> $productRepo
+     */
+    public function __construct(
+        private readonly EntityRepository $productRepo,
+        private readonly RouterInterface $router,
+    ) {
+    }
+
+    public function getIdentifier(): string
+    {
+        return DefaultEntities::PRODUCT;
+    }
+
+    public function getProvidedData(int $limit, int $offset, Context $context): array
+    {
+        $criteria = new Criteria();
+        $criteria->setLimit($limit);
+        $criteria->setOffset($offset);
+        $criteria->addAssociation('translations');
+        $criteria->addAssociation('categories');
+        $criteria->addAssociation('properties');
+        $criteria->addAssociation('options');
+        $criteria->addAssociation('prices');
+        $criteria->addAssociation('mainCategories');
+        $criteria->addAssociation('media.media.tags');
+        $criteria->addAssociation('media.media.translations');
+        $criteria->addAssociation('visibilities');
+        $criteria->addAssociation('configuratorSettings.media');
+        $criteria->addAssociation('downloads.media.tags');
+        $criteria->addAssociation('downloads.media.translations');
+        $criteria->addSorting(
+            new FieldSorting('parentId'), // get 'NULL' parentIds first
+            new FieldSorting('id')
+        );
+        $this->addBundleExclusionFilter($criteria);
+        $result = $this->productRepo->search($criteria, $context);
+
+        $cleanResult = $this->cleanupSearchResult($result, [
+            // remove write protected fields
+            'childCount',
+            'autoIncrement',
+            'availableStock',
+            'available',
+            'displayGroup',
+            'ratingAverage',
+            'categoryTree',
+            'listingPrices',
+            'sales',
+            'tax', // taxId is already provided
+            'productId',
+            'cheapestPrice',
+            'tagIds',
+            'categoryIds',
+            'streamIds',
+            'states',
+            'categoriesRo',
+
+            // media
+            'mimeType',
+            'mediaTypeRaw',
+            'metaData',
+            'mediaType',
+            'mediaId',
+            'thumbnails',
+            'thumbnailsRo',
+            'hasFile',
+            'userId',
+            'canonicalProductId',
+            'cmsPageId',
+        ]);
+
+        foreach ($cleanResult as &$product) {
+            // cleanup association entities - only ids are needed
+            $this->cleanupAssociationToOnlyContainIds($product, 'categories');
+            $this->cleanupAssociationToOnlyContainIds($product, 'properties');
+            $this->cleanupAssociationToOnlyContainIds($product, 'options');
+            // generate download file urls if needed
+            if (isset($product['downloads'])) {
+                foreach ($product['downloads'] as &$download) {
+                    $download['media']['url'] = $this->router->generate('api.admin.data-provider.download-private-file', [
+                        'file' => $download['media']['fileName'] . '.' . $download['media']['fileExtension'],
+                        'identifier' => $download['media']['id'],
+                    ], UrlGeneratorInterface::ABSOLUTE_URL);
+                }
+            }
+        }
+
+        return $cleanResult;
+    }
+
+    public function getProvidedTotal(Context $context): int
+    {
+        $criteria = new Criteria();
+        $this->addBundleExclusionFilter($criteria);
+
+        return $this->readTotalFromRepo($this->productRepo, $context, $criteria);
+    }
+
+    private function addBundleExclusionFilter(Criteria $criteria): void
+    {
+        if (!$this->hasTypeColumn()) {
+            return;
+        }
+
+        $criteria->addFilter(
+            new NotFilter(NotFilter::CONNECTION_AND, [
+                new EqualsFilter('type', self::BUNDLE_PRODUCT_TYPE),
+            ])
+        );
+    }
+
+    private function hasTypeColumn(): bool
+    {
+        return $this->productRepo->getDefinition()->getField('type') !== null;
+    }
+}

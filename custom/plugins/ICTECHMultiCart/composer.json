@@ -1,0 +1,52 @@
+{
+    "name": "ictech/multi-cart",
+    "description": "Shopware multi-cart plugin with per-cart preferences, promotions, and combined checkout support.",
+    "type": "shopware-platform-plugin",
+    "version": "1.0.0",
+    "license": "MIT",
+    "require": {
+        "shopware/core": "^6.6",
+        "shopware/storefront": "^6.6"
+    },
+    "extra": {
+        "shopware-plugin-class": "ICTECHMultiCart\\ICTECHMultiCart",
+        "label": {
+            "de-DE": "ICTECH Multi Cart",
+            "en-GB": "ICTECH Multi Cart"
+        },
+        "description": {
+            "de-DE": "Entwicklung einer Multi-Cart-Funktionalität für Shopware, die es Benutzern ermöglicht, mehrere Warenkörbe gleichzeitig zu erstellen, zu verwalten und einzeln oder gemeinsam zu bestellen. Jeder Warenkorb unterstützt individuelle Einstellungen wie Adressen, Zahlungs- und Versandarten sowie Gutscheincodes für maximale Flexibilität.",
+            "en-GB": "Develop a multi-cart functionality for Shopware that allows users to create, manage, and checkout multiple carts independently or in a single transaction. Each cart supports individual preferences like addresses, payment, shipping methods, and promotion codes, enhancing flexibility and user experience."
+        },
+        "plugin-icon": "src/Resources/config/multi cart.png",
+        "copyright": "(c) iCreateive Technologies. All Rights Reserved.",
+        "manufacturerLink": {
+            "de-DE": "https://www.icreativetechnologies.com/",
+            "en-GB": "https://www.icreativetechnologies.com/"
+        },
+        "supportLink": {
+            "de-DE": "https://support.icreativetechnologies.com/",
+            "en-GB": "https://support.icreativetechnologies.com/"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "ICTECHMultiCart\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ICTECHMultiCart\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "nunomaduro/phpinsights": "^2.13"
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/runtime": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

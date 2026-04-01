@@ -1,0 +1,147 @@
+<sw-page class="multi-cart-manager-monitoring">
+    <template #smart-bar-header>
+        <h2>{{ $tc('multi-cart-manager.monitoring.title') }}</h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <div class="smart-bar-actions-container">
+            <sw-select-field
+                v-model:value="selectedSalesChannel"
+                :label="$tc('multi-cart-manager.monitoring.salesChannel')"
+                :options="salesChannels"
+                option-value-key="id"
+                option-label-key="name"
+                class="sales-channel-select"
+            />
+        </div>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+            <sw-card :title="$tc('multi-cart-manager.monitoring.customerSelection')" class="monitoring-filters">
+                <sw-entity-single-select
+                    v-model:value="selectedCustomerId"
+                    entity="customer"
+                    :label="$tc('multi-cart-manager.monitoring.customer')"
+                    :placeholder="$tc('multi-cart-manager.monitoring.customerPlaceholder')"
+                    label-property="email"
+                    value-property="id"
+                    show-clearable-button
+                />
+            </sw-card>
+
+            <sw-card :title="$tc('multi-cart-manager.monitoring.list')" class="monitoring-table">
+                <sw-data-grid
+                    :data-source="monitoredCarts"
+                    :columns="monitoringColumns"
+                    :show-selection="false"
+                    :show-actions="true"
+                    :is-loading="isLoading"
+                    identifier="id"
+                >
+                    <template #column-name="{ item }">
+                        <div class="monitoring-cart-name">
+                            <strong>{{ item.name }}</strong>
+                            <span class="monitoring-cart-meta">{{ item.itemCount }} {{ $tc('multi-cart-manager.monitoring.itemCount') }}</span>
+                        </div>
+                    </template>
+                    <template #column-status="{ item }">
+                        <span class="monitoring-status-badge">{{ item.status }}</span>
+                    </template>
+                    <template #column-itemCount="{ item }">
+                        <span>{{ item.itemCount }}</span>
+                    </template>
+                    <template #column-promotionCode="{ item }">
+                        <span>{{ item.promotionCode || '-' }}</span>
+                    </template>
+                    <template #column-total="{ item }">
+                        <strong>{{ formatCurrencyWithSymbol(item.total) }}</strong>
+                    </template>
+                    <template #column-updatedAt="{ item }">
+                        <span>{{ formatDate(item.updatedAt) }}</span>
+                    </template>
+                    <template #actions="{ item }">
+                        <sw-context-menu-item @click="showCartDetails(item)">
+                            {{ $tc('multi-cart-manager.monitoring.viewDetails') }}
+                        </sw-context-menu-item>
+                    </template>
+                </sw-data-grid>
+            </sw-card>
+
+            <sw-modal
+                v-if="selectedCartDetails"
+                class="monitoring-details-modal"
+                :title="$tc('multi-cart-manager.monitoring.detailsTitle')"
+                size="large"
+                @modal-close="closeCartDetails"
+            >
+                <div class="monitoring-details">
+                    <div class="monitoring-details__header">
+                        <div class="monitoring-details__identity">
+                            <h3>{{ selectedCartDetails.name }}</h3>
+                            <span class="monitoring-status-badge">{{ selectedCartDetails.status }}</span>
+                        </div>
+                        <div class="monitoring-details__totals">
+                            <strong>{{ formatCurrencyWithSymbol(selectedCartDetails.total) }}</strong>
+                            <span>{{ selectedCartDetails.itemCount }} {{ $tc('multi-cart-manager.monitoring.itemCount') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="monitoring-details__summary">
+                        <div class="monitoring-summary-card">
+                            <span class="monitoring-summary-card__label">{{ $tc('multi-cart-manager.monitoring.promotionCode') }}</span>
+                            <strong>{{ selectedCartDetails.promotionCode || '-' }}</strong>
+                        </div>
+                        <div class="monitoring-summary-card">
+                            <span class="monitoring-summary-card__label">Subtotal</span>
+                            <strong>{{ formatCurrencyWithSymbol(selectedCartDetails.subtotal) }}</strong>
+                        </div>
+                        <div class="monitoring-summary-card">
+                            <span class="monitoring-summary-card__label">Discount</span>
+                            <strong>{{ formatCurrencyWithSymbol(selectedCartDetails.promotionDiscount) }}</strong>
+                        </div>
+                        <div class="monitoring-summary-card">
+                            <span class="monitoring-summary-card__label">{{ $tc('multi-cart-manager.monitoring.updatedAt') }}</span>
+                            <strong>{{ formatDate(selectedCartDetails.updatedAt) }}</strong>
+                        </div>
+                    </div>
+
+                    <div
+                        v-if="selectedCartDetails.items && selectedCartDetails.items.length"
+                        class="monitoring-details__items"
+                    >
+                        <div
+                            v-for="(cartItem, index) in selectedCartDetails.items"
+                            :key="`${selectedCartDetails.id}-${index}`"
+                            class="monitoring-line-item"
+                        >
+                            <div class="monitoring-line-item__main">
+                                <strong>{{ cartItem.productName || '-' }}</strong>
+                                <span>{{ cartItem.productNumber || '-' }}</span>
+                            </div>
+                            <div class="monitoring-line-item__meta">
+                                <span>Qty: {{ cartItem.quantity }}</span>
+                                <span>Unit: {{ formatCurrencyWithSymbol(cartItem.unitPrice) }}</span>
+                                <strong>Total: {{ formatCurrencyWithSymbol(cartItem.totalPrice) }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        v-else
+                        class="monitoring-details__empty"
+                    >
+                        <strong>{{ $tc('multi-cart-manager.monitoring.noItems') }}</strong>
+                        <span>Manage multiple shopping carts for customers</span>
+                    </div>
+                </div>
+
+                <template #modal-footer>
+                    <sw-button @click="closeCartDetails">
+                        {{ $tc('global.default.close') }}
+                    </sw-button>
+                </template>
+            </sw-modal>
+        </sw-card-view>
+    </template>
+</sw-page>

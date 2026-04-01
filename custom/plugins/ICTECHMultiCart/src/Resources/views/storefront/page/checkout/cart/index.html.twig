@@ -1,0 +1,23 @@
+{% sw_extends '@Storefront/storefront/page/checkout/cart/index.html.twig' %}
+
+{% block page_checkout_cart_action_proceed %}
+    {% set ictechMultiCartEnabled = ictechMultiCart is defined and ictechMultiCart.get('enabled') %}
+    {% set ictechMultiCartActive = ictechMultiCartEnabled
+        and ictechMultiCart.get('customerLoggedIn')
+        and ictechMultiCart.get('customerAllowed')
+        and not ictechMultiCart.get('blacklisted')
+        and ictechMultiCart.get('activeCartId') %}
+
+    <div class="checkout-aside-action d-grid gap-2">
+        <a href="{{ ictechMultiCartActive ? path('frontend.ictech.multi_cart.checkout.active') : path('frontend.checkout.confirm.page') }}"
+           class="btn btn-primary btn-lg begin-checkout-btn"
+           title="{{ 'checkout.proceedLink'|trans|striptags }}">
+            {{ 'checkout.proceedLink'|trans|sw_sanitize }}
+        </a>
+        <a href="{{ app.request.headers.get('referer') ?: path('frontend.home.page') }}"
+           class="btn btn-outline-secondary"
+           title="{{ 'ictech-multi-cart.cart.continueShopping'|trans|striptags }}">
+            {{ 'ictech-multi-cart.cart.continueShopping'|trans|sw_sanitize }}
+        </a>
+    </div>
+{% endblock %}

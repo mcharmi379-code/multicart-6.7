@@ -1,0 +1,211 @@
+<?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace SwagMigrationAssistant\Migration\Service;
+
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
+use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
+use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
+use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
+use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityFailedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\MappingDeltaResult;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
+
+#[Package('fundamentals@after-sales')]
+class MigrationDataConverter implements MigrationDataConverterInterface
+{
+    public function __construct(
+        private readonly EntityWriterInterface $entityWriter,
+        private readonly ConverterRegistryInterface $converterRegistry,
+        private readonly MediaFileServiceInterface $mediaFileService,
+        private readonly LoggingServiceInterface $loggingService,
+        private readonly EntityDefinition $dataDefinition,
+        private readonly MappingServiceInterface $mappingService,
+        private readonly MigrationEntityValidationService $validationService,
+    ) {
+    }
+
+    public function convert(array $data, MigrationContextInterface $migrationContext, Context $context): void
+    {
+        $dataSet = $migrationContext->getDataSet();
+        if ($dataSet === null) {
+            return;
+        }
+
+        try {
+            $converter = $this->converterRegistry->getConverter($migrationContext);
+            $result = $this->filterDeltas($data, $converter, $migrationContext, $context);
+            $data = $result->getMigrationData();
+            $preloadIds = $result->getPreloadIds();
+
+            if (\count($data) > 0) {
+                if (!empty($preloadIds)) {
+                    $this->mappingService->preloadMappings($preloadIds, $context);
+                }
+                $createData = $this->convertData($context, $data, $converter, $migrationContext, $dataSet);
+
+                if (\count($createData) === 0) {
+                    return;
+                }
+                $this->entityWriter->upsert(
+                    $this->dataDefinition,
+                    $createData,
+                    WriteContext::createFromContext($context)
+                );
+                $converter->writeMapping($context);
+                $this->mediaFileService->writeMediaFile($context);
+            }
+        } catch (\Throwable $exception) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withException($exception)
+                    ->withEntityName($dataSet::getEntity())
+                    ->build(RunExceptionLog::class)
+            );
+        }
+    }
+
+    private function convertData(
+        Context $context,
+        array $data,
+        ConverterInterface $converter,
+        MigrationContextInterface $migrationContext,
+        DataSet $dataSet,
+    ): array {
+        $runUuid = $migrationContext->getRunUuid();
+
+        $createData = [];
+        foreach ($data as $item) {
+            try {
+                $convertStruct = $converter->convert($item, $context, $migrationContext);
+                if (!$convertStruct instanceof ConvertStruct) {
+                    $this->loggingService->log(
+                        MigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->withSourceData($item)
+                            ->withEntityName($dataSet::getEntity())
+                            ->build(ConvertEntityFailedLog::class)
+                    );
+
+                    continue;
+                }
+
+                $convertFailureFlag = empty($convertStruct->getConverted());
+
+                $this->validationService->validate(
+                    $migrationContext,
+                    $context,
+                    $convertStruct->getConverted(),
+                    $dataSet::getEntity(),
+                    $item
+                );
+
+                $createData[] = [
+                    'entity' => $dataSet::getEntity(),
+                    'runId' => $runUuid,
+                    'raw' => $item,
+                    'converted' => $convertStruct->getConverted(),
+                    'unmapped' => $convertStruct->getUnmapped(),
+                    'mappingUuid' => $convertStruct->getMappingUuid(),
+                    'convertFailure' => $convertFailureFlag,
+                ];
+            } catch (\Throwable $exception) {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withException($exception)
+                        ->withEntityName($dataSet::getEntity())
+                        ->withSourceData($item)
+                        ->build(RunExceptionLog::class)
+                );
+
+                $createData[] = [
+                    'entity' => $dataSet::getEntity(),
+                    'runId' => $runUuid,
+                    'raw' => $item,
+                    'converted' => null,
+                    'unmapped' => $item,
+                    'mappingUuid' => null,
+                    'convertFailure' => true,
+                ];
+
+                continue;
+            }
+        }
+
+        $this->loggingService->flush();
+
+        return $createData;
+    }
+
+    /**
+     * Removes all datasets from fetched data which have the same checksum as last time they were migrated.
+     * So we ignore identic datasets for repeated migrations.
+     */
+    private function filterDeltas(array $data, ConverterInterface $converter, MigrationContextInterface $migrationContext, Context $context): MappingDeltaResult
+    {
+        $mappedData = [];
+        $checksums = [];
+        $preloadIds = [];
+
+        foreach ($data as $dataSet) {
+            $mappedData[$converter->getSourceIdentifier($dataSet)] = $dataSet;
+            $checksums[$converter->getSourceIdentifier($dataSet)] = Hasher::hash(\serialize($dataSet));
+        }
+
+        $dataSet = $migrationContext->getDataSet();
+
+        if ($dataSet === null) {
+            return new MappingDeltaResult();
+        }
+
+        $connectionId = $migrationContext->getConnection()->getId();
+        $entity = $dataSet::getEntity();
+        $result = $this->mappingService->getMappings($connectionId, $entity, \array_keys($checksums), $context);
+
+        if ($result->getTotal() > 0) {
+            $relatedMappings = [];
+            foreach ($result->getEntities() as $mapping) {
+                $oldIdentifier = $mapping->getOldIdentifier();
+                if ($oldIdentifier === null) {
+                    continue;
+                }
+
+                $checksum = $mapping->getChecksum();
+                $preloadIds[] = $mapping->getId();
+                if (isset($checksums[$oldIdentifier]) && $checksums[$oldIdentifier] === $checksum) {
+                    unset($mappedData[$oldIdentifier]);
+                }
+
+                $additionalData = $mapping->getAdditionalData();
+                if (isset($additionalData['relatedMappings'])) {
+                    $relatedMappings[] = $additionalData['relatedMappings'];
+                }
+            }
+
+            if ($relatedMappings !== []) {
+                $preloadIds = \array_values(
+                    \array_unique(\array_merge($preloadIds, ...$relatedMappings))
+                );
+            }
+        }
+        $resultSet = new MappingDeltaResult(\array_values($mappedData), $preloadIds);
+        unset($checksums, $mappedData);
+
+        return $resultSet;
+    }
+}

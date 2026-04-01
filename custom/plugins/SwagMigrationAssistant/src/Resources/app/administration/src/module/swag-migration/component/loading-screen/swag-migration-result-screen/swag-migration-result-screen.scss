@@ -1,0 +1,21 @@
+.swag-migration-result-screen {
+    &__log-summary {
+        .mt-card__content {
+            padding: 0 !important;
+        }
+
+        &-banner.mt-banner {
+            margin: var(--scale-size-24) var(--scale-size-24) var(--scale-size-20) var(--scale-size-24);
+        }
+
+        .swag-migration-history-detail-errors {
+            &__description {
+                margin: var(--scale-size-24);
+            }
+
+            .sw-data-grid__cell-content {
+                padding: var(--scale-size-10) var(--scale-size-24) !important;
+            }
+        }
+    }
+}

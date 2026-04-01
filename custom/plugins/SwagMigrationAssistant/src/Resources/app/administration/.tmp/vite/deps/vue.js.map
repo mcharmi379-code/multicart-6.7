@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../../../../../vendor/shopware/administration/Resources/app/administration/node_modules/.shopware-vite-plugin-vue-globals/vue.js"],
+  "sourcesContent": ["module.exports = window['Shopware']?.['Vue']"],
+  "mappings": ";;;;;;AAAA;AAAA;AAAA;AAAA,WAAO,WAAU,YAAO,UAAU,MAAjB,mBAAqB;AAAA;AAAA;",
+  "names": []
+}

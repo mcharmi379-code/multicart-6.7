@@ -1,0 +1,22 @@
+{% block swag_migration_result_screen %}
+    <div class="swag-migration-result-screen">
+        <mt-card
+            class="swag-migration-result-screen__log-summary"
+            position-identifier="swag-migration-result-screen__log-summary"
+            :is-loading="!latestRun"
+            :title="$tc('swag-migration.index.loadingScreenCard.result.title')"
+        >
+            <mt-banner
+                class="swag-migration-result-screen__log-summary-banner"
+                variant="info"
+            >
+                {{ $tc('swag-migration.index.loadingScreenCard.result.historyHint') }}
+            </mt-banner>
+
+            <swag-migration-history-detail-errors
+                v-if="latestRun"
+                :migration-run="latestRun"
+            />
+        </mt-card>
+    </div>
+{% endblock %}

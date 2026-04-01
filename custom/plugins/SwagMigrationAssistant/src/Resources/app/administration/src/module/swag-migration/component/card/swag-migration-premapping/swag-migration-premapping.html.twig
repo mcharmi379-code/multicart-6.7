@@ -1,0 +1,20 @@
+{% block swag_migration_premapping %}
+    <div class="swag-migration-premapping">
+        {% block swag_migration_premapping_unfilled_mapping %}
+            <swag-migration-tab-card
+                v-if="!isLoading && premapping.length > 0"
+                class="swag-migration-premapping__tab-card"
+                :title="$tc('swag-migration.index.premappingCard.cardTitle')"
+                :items="premapping"
+            >
+                <template #items="{ item }">
+                    <swag-migration-grid-selection
+                        :choices="item.choices"
+                        :mapping="item.mapping"
+                        @update:value="onPremappingChanged"
+                    />
+                </template>
+            </swag-migration-tab-card>
+        {% endblock %}
+    </div>
+{% endblock %}

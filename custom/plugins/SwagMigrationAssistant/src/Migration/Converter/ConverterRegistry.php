@@ -1,0 +1,42 @@
+<?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace SwagMigrationAssistant\Migration\Converter;
+
+use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+
+#[Package('fundamentals@after-sales')]
+class ConverterRegistry implements ConverterRegistryInterface
+{
+    /**
+     * @param ConverterInterface[] $converters
+     */
+    public function __construct(private readonly iterable $converters)
+    {
+    }
+
+    /**
+     * @throws MigrationException
+     */
+    public function getConverter(MigrationContextInterface $migrationContext): ConverterInterface
+    {
+        foreach ($this->converters as $converter) {
+            if ($converter->supports($migrationContext)) {
+                return $converter;
+            }
+        }
+
+        $dataSet = $migrationContext->getDataSet();
+        if ($dataSet === null) {
+            throw MigrationException::migrationContextPropertyMissing('DataSet');
+        }
+
+        throw MigrationException::converterNotFound($dataSet::getEntity());
+    }
+}

@@ -1,0 +1,42 @@
+<div class="ictech-account-carts__card-header">
+    <div class="ictech-account-carts__title-wrap">
+        <div class="ictech-account-carts__title-row">
+            <h2 class="ictech-account-carts__card-title" data-ictech-cart-title>{{ cart.name }}</h2>
+            <button type="button" class="ictech-account-carts__edit-name" data-ictech-rename-toggle aria-label="{{ 'ictech-multi-cart.account.renameButton'|trans|striptags }}">
+                {% sw_icon 'pencil' style { size: 'sm', ariaHidden: true } %}
+                <span>{{ 'ictech-multi-cart.account.renameButton'|trans }}</span>
+            </button>
+        </div>
+        <form class="ictech-account-carts__rename-form" hidden data-ictech-rename-form>
+            <p class="ictech-account-carts__rename-hint">{{ 'ictech-multi-cart.account.renameHint'|trans }}</p>
+            <input type="text" class="ictech-account-carts__input" name="name" maxlength="255" value="{{ cart.name }}" data-ictech-rename-input aria-label="{{ 'ictech-multi-cart.account.renameLabel'|trans|striptags }}">
+            <div class="ictech-account-carts__rename-actions">
+                <button type="submit" class="ictech-account-carts__btn ictech-account-carts__btn--primary" data-ictech-rename-save>{{ 'ictech-multi-cart.account.renameSave'|trans }}</button>
+                <button type="button" class="ictech-account-carts__btn ictech-account-carts__btn--ghost" data-ictech-rename-cancel>{{ 'ictech-multi-cart.account.cancel'|trans }}</button>
+            </div>
+            <p class="ictech-account-carts__rename-feedback" hidden data-ictech-rename-feedback></p>
+        </form>
+        <div class="ictech-account-carts__date">{{ cart.updatedAt ?: cart.createdAt }}</div>
+    </div>
+
+    <div class="ictech-account-carts__toolbar">
+        {% if cart.isActive %}
+            <span class="ictech-account-carts__chip">{{ 'ictech-multi-cart.account.active'|trans }}</span>
+        {% endif %}
+
+        <form method="post" action="{{ path('frontend.ictech.multi_cart.account.view', { cartId: cart.id }) }}" class="ictech-account-carts__icon-form">
+            <button type="submit" class="ictech-account-carts__icon-btn" title="{{ 'ictech-multi-cart.account.viewCart'|trans|striptags }}">{% sw_icon 'eye-open' style { size: 'sm', ariaHidden: true } %}</button>
+        </form>
+        <form method="post" action="{{ path('frontend.ictech.multi_cart.account.checkout', { cartId: cart.id }) }}" class="ictech-account-carts__icon-form">
+            <button type="submit" class="ictech-account-carts__icon-btn ictech-account-carts__icon-btn--primary" title="{{ 'ictech-multi-cart.account.checkout'|trans|striptags }}">{% sw_icon 'bag' style { size: 'sm', ariaHidden: true } %}</button>
+        </form>
+        <form method="post" action="{{ path('frontend.ictech.multi_cart.account.duplicate', { cartId: cart.id }) }}" class="ictech-account-carts__icon-form">
+            <button type="submit" class="ictech-account-carts__icon-btn" title="{{ 'ictech-multi-cart.account.duplicate'|trans|striptags }}">{% sw_icon 'arrow-switch' style { size: 'sm', ariaHidden: true } %}</button>
+        </form>
+        {% if not cart.isDefault %}
+            <form method="post" action="{{ path('frontend.ictech.multi_cart.account.delete', { cartId: cart.id }) }}" class="ictech-account-carts__icon-form">
+                <button type="submit" class="ictech-account-carts__icon-btn ictech-account-carts__icon-btn--danger" title="{{ 'ictech-multi-cart.account.delete'|trans|striptags }}">{% sw_icon 'trash' style { size: 'sm', ariaHidden: true } %}</button>
+            </form>
+        {% endif %}
+    </div>
+</div>

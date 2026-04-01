@@ -1,0 +1,44 @@
+<form method="post" action="{{ path('frontend.ictech.multi_cart.account.combined_checkout') }}" class="ictech-account-carts__modal" hidden data-ictech-combined-modal data-ictech-combined-form>
+    <div class="ictech-account-carts__modal-dialog">
+        <h3>{{ 'ictech-multi-cart.account.combined.title'|trans }}</h3>
+        <p data-ictech-combined-description>{{ 'ictech-multi-cart.account.combined.description'|trans }}</p>
+        <input type="hidden" name="conflictAcknowledged" value="0" data-ictech-conflict-acknowledged>
+        <div class="ictech-account-carts__field">
+            <label>{{ 'ictech-multi-cart.account.shippingAddress'|trans }}</label>
+            <select class="ictech-account-carts__select" name="shippingAddressId" data-ictech-combined-field="shippingAddressId">
+                {% for address in page.options.addresses %}
+                    <option value="{{ address.id }}">{{ address.label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="ictech-account-carts__field">
+            <label>{{ 'ictech-multi-cart.account.billingAddress'|trans }}</label>
+            <select class="ictech-account-carts__select" name="billingAddressId" data-ictech-combined-field="billingAddressId">
+                {% for address in page.options.addresses %}
+                    <option value="{{ address.id }}">{{ address.label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="ictech-account-carts__field">
+            <label>{{ 'ictech-multi-cart.account.paymentMethod'|trans }}</label>
+            <select class="ictech-account-carts__select" name="paymentMethodId" data-ictech-combined-field="paymentMethodId">
+                {% for method in page.options.paymentMethods %}
+                    <option value="{{ method.id }}">{{ method.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="ictech-account-carts__field">
+            <label>{{ 'ictech-multi-cart.account.shippingMethod'|trans }}</label>
+            <select class="ictech-account-carts__select" name="shippingMethodId" data-ictech-combined-field="shippingMethodId">
+                {% for method in page.options.shippingMethods %}
+                    <option value="{{ method.id }}">{{ method.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div data-ictech-combined-cart-ids></div>
+        <div class="ictech-account-carts__modal-actions">
+            <button type="button" class="ictech-account-carts__btn ictech-account-carts__btn--ghost" data-ictech-modal-close>{{ 'ictech-multi-cart.account.cancel'|trans }}</button>
+            <button type="submit" class="ictech-account-carts__btn ictech-account-carts__btn--primary">{{ 'ictech-multi-cart.account.combined.completeOrder'|trans }}</button>
+        </div>
+    </div>
+</form>

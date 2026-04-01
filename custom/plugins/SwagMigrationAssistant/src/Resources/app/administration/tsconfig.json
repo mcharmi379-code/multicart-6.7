@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es2020",
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "paths": {
+      "src": ["src"],
+      "@administration/*": [
+        "../../../../../../../src/Administration/Resources/app/administration/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "./scripts/**/*"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "node_modules"
+  ],
+  "files": [
+    "../../../../../../../src/Administration/Resources/app/administration/src/html-shim.d.ts",
+    "../../../../../../../src/Administration/Resources/app/administration/src/global.types.ts",
+    "../../../../../../../src/Administration/Resources/app/administration/src/entity-schema-definition.d.ts",
+    "../../../../../../../src/Administration/Resources/app/administration/src/global.types.ts"
+  ]
+}

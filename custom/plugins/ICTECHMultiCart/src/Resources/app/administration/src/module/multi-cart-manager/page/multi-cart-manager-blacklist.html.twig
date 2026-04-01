@@ -1,0 +1,92 @@
+<sw-page class="multi-cart-manager-blacklist">
+    <template #smart-bar-header>
+        <h2>{{ $tc('multi-cart-manager.blacklist.title') }}</h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <div class="smart-bar-actions-container">
+            <sw-select-field
+                v-model:value="selectedSalesChannel"
+                :label="$tc('multi-cart-manager.blacklist.salesChannel')"
+                :options="salesChannels"
+                option-value-key="id"
+                option-label-key="name"
+                class="sales-channel-select"
+            />
+            <sw-button
+                variant="primary"
+                @click="showAddForm = !showAddForm"
+            >
+                {{ showAddForm ? $tc('multi-cart-manager.blacklist.viewList') : $tc('multi-cart-manager.blacklist.addUser') }}
+            </sw-button>
+        </div>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+        <!-- Add Form -->
+        <sw-card v-if="showAddForm" :title="$tc('multi-cart-manager.blacklist.addUserForm')" class="add-form">
+            <sw-entity-single-select
+                :key="selectedSalesChannel"
+                v-model:value="newBlacklist.customerId"
+                entity="customer"
+                :criteria="customerCriteria"
+                :label="$tc('multi-cart-manager.blacklist.customer')"
+                :placeholder="$tc('multi-cart-manager.blacklist.customerPlaceholder')"
+                label-property="email"
+                value-property="id"
+                show-clearable-button
+            />
+            <sw-textarea-field
+                v-model:value="newBlacklist.reason"
+                :label="$tc('multi-cart-manager.blacklist.reason')"
+                :placeholder="$tc('multi-cart-manager.blacklist.reason')"
+            />
+            <div class="form-actions">
+                <sw-button
+                    variant="primary"
+                    :disabled="isDuplicateSelection"
+                    @click="addToBlacklist"
+                >
+                    {{ $tc('multi-cart-manager.blacklist.add') }}
+                </sw-button>
+                <sw-button
+                    @click="showAddForm = false"
+                >
+                    {{ $tc('multi-cart-manager.blacklist.cancel') }}
+                </sw-button>
+            </div>
+        </sw-card>
+
+        <!-- Blacklist Table -->
+        <sw-card :title="$tc('multi-cart-manager.blacklist.list')" class="blacklist-table">
+            <sw-data-grid
+                :data-source="blacklistedUsers"
+                :columns="blacklistColumns"
+                :show-selection="false"
+                :show-actions="true"
+                :is-loading="isLoading"
+                identifier="id"
+            >
+                <template #column-customerDisplay="{ item }">
+                    <span>{{ item.customerDisplay }}</span>
+                </template>
+                <template #column-reason="{ item }">
+                    <span>{{ item.reason || '-' }}</span>
+                </template>
+                <template #column-createdAt="{ item }">
+                    <span>{{ formatCreatedAt(item.createdAt) }}</span>
+                </template>
+                <template #actions="{ item }">
+                    <sw-context-menu-item
+                        variant="danger"
+                        @click="removeFromBlacklist(item.id)"
+                    >
+                        {{ $tc('multi-cart-manager.blacklist.remove') }}
+                    </sw-context-menu-item>
+                </template>
+            </sw-data-grid>
+        </sw-card>
+        </sw-card-view>
+    </template>
+</sw-page>

@@ -1,0 +1,157 @@
+<sw-page class="multi-cart-manager-dashboard">
+    <template #smart-bar-header>
+        <h2>{{ $tc('multi-cart-manager.dashboard.title') }}</h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <div class="smart-bar-actions-container">
+            <sw-select-field
+                v-model:value="selectedSalesChannel"
+                :label="$tc('multi-cart-manager.dashboard.salesChannel')"
+                :options="salesChannels"
+                option-value-key="id"
+                option-label-key="name"
+                @change="onSalesChannelChange"
+                class="sales-channel-select"
+            />
+        </div>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+        <!-- Analytics Cards -->
+        <sw-card :title="$tc('multi-cart-manager.dashboard.analytics')" class="analytics-section">
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div class="analytics-value">{{ analytics.totalCartsCreated || 0 }}</div>
+                    <div class="analytics-label">{{ $tc('multi-cart-manager.dashboard.totalCarts') }}</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">{{ analytics.cartsConvertedToOrders || 0 }}</div>
+                    <div class="analytics-label">{{ $tc('multi-cart-manager.dashboard.convertedOrders') }}</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">{{ analytics.conversionRate || 0 }}%</div>
+                    <div class="analytics-label">{{ $tc('multi-cart-manager.dashboard.conversionRate') }}</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">{{ analytics.averageItemsPerCart || 0 }}</div>
+                    <div class="analytics-label">{{ $tc('multi-cart-manager.dashboard.avgItems') }}</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">€ {{ formatCurrency(analytics.averageCartValue) }}</div>
+                    <div class="analytics-label">{{ $tc('multi-cart-manager.dashboard.avgValue') }}</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">€ {{ formatCurrency(analytics.totalCartValue) }}</div>
+                    <div class="analytics-label">{{ $tc('multi-cart-manager.dashboard.totalValue') }}</div>
+                </div>
+            </div>
+        </sw-card>
+
+        <sw-card :title="$tc('multi-cart-manager.dashboard.usageDistribution')" class="usage-distribution-section">
+            <sw-data-grid
+                :data-source="usageDistribution"
+                :columns="usageDistributionColumns"
+                :show-selection="false"
+                :show-actions="true"
+                :is-loading="isLoading"
+                identifier="customerId"
+            >
+                <template #column-customerName="{ item }">
+                    <span>{{ item.customerName }}</span>
+                </template>
+                <template #column-customerEmail="{ item }">
+                    <span>{{ item.customerEmail || '-' }}</span>
+                </template>
+                <template #column-cartCount="{ item }">
+                    <span>{{ item.cartCount }}</span>
+                </template>
+                <template #column-totalValue="{ item }">
+                    <span>€ {{ formatCurrency(item.totalValue) }}</span>
+                </template>
+                <template #actions="{ item }">
+                    <sw-context-menu-item @click="showUsageDetails(item)">
+                        {{ $tc('multi-cart-manager.dashboard.viewDetails') }}
+                    </sw-context-menu-item>
+                </template>
+            </sw-data-grid>
+        </sw-card>
+
+        <!-- Active Carts -->
+        <sw-card :title="$tc('multi-cart-manager.dashboard.activeCarts')" class="active-carts-section">
+            <sw-data-grid
+                :data-source="activeCarts"
+                :columns="activeCartsColumns"
+                :show-selection="false"
+                :show-actions="true"
+                :is-loading="isLoading"
+                identifier="id"
+            >
+                <template #column-name="{ item }">
+                    <span>{{ item.name }}</span>
+                </template>
+                <template #column-owner="{ item }">
+                    <span>{{ item.owner }}</span>
+                </template>
+                <template #column-itemCount="{ item }">
+                    <span>{{ item.itemCount }}</span>
+                </template>
+                <template #column-total="{ item }">
+                    <span>€ {{ formatCurrency(item.total) }}</span>
+                </template>
+                <template #column-lastActivity="{ item }">
+                    <span>{{ formatDate(item.lastActivity) }}</span>
+                </template>
+                <template #column-createdAt="{ item }">
+                    <span>{{ formatDate(item.createdAt) }}</span>
+                </template>
+                <template #actions="{ item }">
+                    <sw-context-menu-item @click="showCartDetails(item)">
+                        {{ $tc('multi-cart-manager.dashboard.viewDetails') }}
+                    </sw-context-menu-item>
+                </template>
+            </sw-data-grid>
+        </sw-card>
+
+        <!-- Completed Orders -->
+        <sw-card :title="$tc('multi-cart-manager.dashboard.completedOrders')" class="completed-orders-section">
+            <sw-data-grid
+                :data-source="completedOrders"
+                :columns="completedOrdersColumns"
+                :show-selection="false"
+                :show-actions="true"
+                :is-loading="isLoading"
+                identifier="id"
+            >
+                <template #column-cartName="{ item }">
+                    <span>{{ item.cartName }}</span>
+                </template>
+                <template #column-orderId="{ item }">
+                    <span>{{ item.orderId }}</span>
+                </template>
+                <template #column-status="{ item }">
+                    <span>{{ item.status }}</span>
+                </template>
+                <template #column-items="{ item }">
+                    <span>{{ item.items || '-' }}</span>
+                </template>
+                <template #column-promotionCode="{ item }">
+                    <span>{{ item.promotionCode || '-' }}</span>
+                </template>
+                <template #column-discount="{ item }">
+                    <span>€ {{ formatCurrency(item.discount) }}</span>
+                </template>
+                <template #column-orderedAt="{ item }">
+                    <span>{{ formatDate(item.orderedAt) }}</span>
+                </template>
+                <template #actions="{ item }">
+                    <sw-context-menu-item @click="showOrderDetails(item)">
+                        {{ $tc('multi-cart-manager.dashboard.viewDetails') }}
+                    </sw-context-menu-item>
+                </template>
+            </sw-data-grid>
+        </sw-card>
+        </sw-card-view>
+    </template>
+</sw-page>

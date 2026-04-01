@@ -1,0 +1,41 @@
+.swag-migration-tab-card {
+    .mt-card {
+        min-height: var(--scale-size-256);
+
+        &__tabs {
+            margin: 0 var(--scale-size-16);
+        }
+
+        .mt-card__content {
+            padding: 0;
+        }
+    }
+
+    .sw-tabs {
+        width: 100%;
+
+        .sw-tabs-item {
+            border-bottom: 1px solid var(--color-border-primary-default);
+        }
+    }
+
+    .sw-tabs__custom-content {
+        padding: 0;
+    }
+
+    .swag-migration-tab-card__invalid-badge {
+        background-color: var(--color-interaction-critical-default);
+        color: var(--color-static-white);
+        border-radius: var(--border-radius-m);
+        height: var(--scale-size-16);
+        line-height: var(--font-line-height-2xs);
+        font-size: var(--font-size-xs);
+        padding: var(--scale-size-2) var(--scale-size-10);
+        margin-left: var(--scale-size-2);
+        text-align: center;
+    }
+
+    .sw-tabs-item__error-badge {
+        display: none;
+    }
+}

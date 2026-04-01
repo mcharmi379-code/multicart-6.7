@@ -1,0 +1,9 @@
+parameters:
+    level: 9
+    treatPhpDocTypesAsCertain: false
+    bootstrapFiles:
+        - ../../../vendor/autoload.php
+    paths:
+        - src
+    ignoreErrors:
+        - '#Property.*is never read, only written#'
