@@ -2,7 +2,7 @@
     <label>{{ 'ictech-multi-cart.account.shippingAddress'|trans }}</label>
     <select class="ictech-account-carts__select" data-ictech-preference="shippingAddressId" data-cart-id="{{ cart.id }}">
         <option value="">{{ 'ictech-multi-cart.account.selectPlaceholder'|trans }}</option>
-        {% for address in page.options.addresses %}
+        {% for address in ictechMultiCartPage.options.addresses %}
             <option value="{{ address.id }}"{% if address.id is same as(cart.shippingAddressId) %} selected{% endif %}>{{ address.label }}</option>
         {% endfor %}
     </select>
@@ -19,7 +19,7 @@
     </label>
     <select class="ictech-account-carts__select" data-ictech-preference="billingAddressId" data-cart-id="{{ cart.id }}">
         <option value="">{{ 'ictech-multi-cart.account.selectPlaceholder'|trans }}</option>
-        {% for address in page.options.addresses %}
+        {% for address in ictechMultiCartPage.options.addresses %}
             <option value="{{ address.id }}"{% if address.id is same as(cart.billingAddressId) %} selected{% endif %}>{{ address.label }}</option>
         {% endfor %}
     </select>
@@ -31,7 +31,7 @@
 <div class="ictech-account-carts__field">
     <label>{{ 'ictech-multi-cart.account.paymentMethod'|trans }}</label>
     <select class="ictech-account-carts__select" data-ictech-preference="paymentMethodId" data-cart-id="{{ cart.id }}">
-        {% for method in page.options.paymentMethods %}
+        {% for method in ictechMultiCartPage.options.paymentMethods %}
             <option value="{{ method.id }}"{% if method.id is same as(cart.paymentMethodId) %} selected{% endif %}>{{ method.name }}</option>
         {% endfor %}
     </select>
@@ -40,13 +40,13 @@
 <div class="ictech-account-carts__field">
     <label>{{ 'ictech-multi-cart.account.shippingMethod'|trans }}</label>
     <select class="ictech-account-carts__select" data-ictech-preference="shippingMethodId" data-cart-id="{{ cart.id }}">
-        {% for method in page.options.shippingMethods %}
+        {% for method in ictechMultiCartPage.options.shippingMethods %}
             <option value="{{ method.id }}"{% if method.id is same as(cart.shippingMethodId) %} selected{% endif %}>{{ method.name }}</option>
         {% endfor %}
     </select>
 </div>
 
-{% if page.state.promotionsEnabled %}
+{% if multiCartState.promotionsEnabled %}
     <div class="ictech-account-carts__field">
         <label>{{ 'ictech-multi-cart.account.promoCode'|trans }}</label>
         <div class="ictech-account-carts__promo-row">

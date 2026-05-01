@@ -7,6 +7,7 @@ namespace ICTECHMultiCart\Service;
 use Doctrine\DBAL\Connection;
 use Ramsey\Uuid\Uuid;
 use Shopware\Core\Checkout\Cart\Error\Error;
+use Shopware\Core\Checkout\Cart\LineItem\LineItemCollection;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\LineItemFactoryRegistry;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
@@ -61,24 +62,24 @@ final class MultiCartPriceCalculatorService
 
         /** @var list<array<string, mixed>> $items */
         $items = $this->connection->fetchAllAssociative(
-            'SELECT LOWER(HEX(product_id)) AS productId, quantity
+            'SELECT LOWER(HEX(id)) AS id, LOWER(HEX(product_id)) AS productId, quantity
              FROM ictech_multi_cart_item
              WHERE multi_cart_id = UNHEX(:cartId)
              ORDER BY created_at ASC',
             ['cartId' => $cartId]
         );
 
-        $subtotal = $this->calculateSubtotal($cartId);
+        $subtotal = 0.0;
         $discount = 0.0;
-        $total = $subtotal;
+        $total = 0.0;
         $promotionCode = is_string($cart['promotion_code'] ?? null) ? trim((string) $cart['promotion_code']) : '';
         $promotionApplied = $promotionCode === '';
         $promotionErrors = [];
 
-        if ($items !== []) {
-            $token = (string) Uuid::uuid4()->getHex();
-            $shopwareCart = $this->cartService->createNew($token);
+        $token = (string) Uuid::uuid4()->getHex();
+        $shopwareCart = $this->cartService->createNew($token);
 
+        if ($items !== []) {
             foreach ($items as $item) {
                 $productId = is_string($item['productId'] ?? null) ? $item['productId'] : null;
                 $quantity = is_numeric($item['quantity'] ?? null) ? (int) $item['quantity'] : 0;
@@ -98,20 +99,27 @@ final class MultiCartPriceCalculatorService
 
                 $shopwareCart = $this->cartService->add($shopwareCart, $lineItem, $salesChannelContext);
             }
+        }
 
-            if ($promotionCode !== '') {
-                $promotionItem = $this->promotionItemBuilder->buildPlaceholderItem($promotionCode);
-                $shopwareCart = $this->cartService->add($shopwareCart, $promotionItem, $salesChannelContext);
-            }
+        if ($promotionCode !== '') {
+            $promotionItem = $this->promotionItemBuilder->buildPlaceholderItem($promotionCode);
+            $shopwareCart = $this->cartService->add($shopwareCart, $promotionItem, $salesChannelContext);
+        }
 
-            $shopwareCart = $this->cartService->recalculate($shopwareCart, $salesChannelContext);
+        $shopwareCart = $this->cartService->recalculate($shopwareCart, $salesChannelContext);
+
+        if ($items !== []) {
+            $subtotal = $this->synchronizeLineItemPrices($cartId, $items, $shopwareCart->getLineItems());
             $price = $shopwareCart->getPrice();
             $total = (float) $price->getTotalPrice();
             $discount = $this->calculatePromotionDiscount($shopwareCart);
-            $promotionErrors = $this->extractPromotionErrors($shopwareCart, $promotionCode);
-            $promotionApplied = $promotionCode === ''
-                || ($promotionErrors === [] && $this->hasAppliedPromotion($shopwareCart, $promotionCode));
+        } else {
+            $this->resetItemPrices($cartId);
         }
+
+        $promotionErrors = $this->extractPromotionErrors($shopwareCart, $promotionCode);
+        $promotionApplied = $promotionCode === ''
+            || ($promotionErrors === [] && $this->hasAppliedPromotion($shopwareCart, $promotionCode));
 
         $this->connection->update(
             'ictech_multi_cart',
@@ -150,17 +158,67 @@ final class MultiCartPriceCalculatorService
         }
     }
 
-    private function calculateSubtotal(string $cartId): float
+    /**
+     * @param list<array<string, mixed>> $items
+     */
+    private function synchronizeLineItemPrices(string $cartId, array $items, LineItemCollection $lineItems): float
     {
-        /** @var mixed $value */
-        $value = $this->connection->fetchOne(
-            'SELECT COALESCE(SUM(total_price), 0)
-             FROM ictech_multi_cart_item
-             WHERE multi_cart_id = UNHEX(:cartId)',
-            ['cartId' => $cartId]
-        );
+        $subtotal = 0.0;
+        $indexedLineItems = [];
 
-        return is_numeric($value) ? (float) $value : 0.0;
+        foreach ($lineItems->filterFlatByType(LineItem::PRODUCT_LINE_ITEM_TYPE) as $lineItem) {
+            $referencedId = $lineItem->getReferencedId();
+
+            if (!is_string($referencedId) || $referencedId === '') {
+                continue;
+            }
+
+            $indexedLineItems[strtolower($referencedId)] = $lineItem;
+        }
+
+        foreach ($items as $item) {
+            $itemId = is_string($item['id'] ?? null) ? strtolower($item['id']) : '';
+            $productId = is_string($item['productId'] ?? null) ? strtolower($item['productId']) : '';
+
+            if ($itemId === '' || $productId === '') {
+                continue;
+            }
+
+            $lineItem = $indexedLineItems[$productId] ?? null;
+            $price = $lineItem?->getPrice();
+            $unitPrice = $price !== null ? (float) $price->getUnitPrice() : 0.0;
+            $totalPrice = $price !== null ? (float) $price->getTotalPrice() : 0.0;
+
+            $this->connection->update(
+                'ictech_multi_cart_item',
+                [
+                    'unit_price' => $unitPrice,
+                    'total_price' => $totalPrice,
+                    'updated_at' => $this->now(),
+                ],
+                [
+                    'id' => $this->toBinary($itemId),
+                    'multi_cart_id' => $this->toBinary($cartId),
+                ]
+            );
+
+            $subtotal += $totalPrice;
+        }
+
+        return $subtotal;
+    }
+
+    private function resetItemPrices(string $cartId): void
+    {
+        $this->connection->update(
+            'ictech_multi_cart_item',
+            [
+                'unit_price' => 0.0,
+                'total_price' => 0.0,
+                'updated_at' => $this->now(),
+            ],
+            ['multi_cart_id' => $this->toBinary($cartId)]
+        );
     }
 
     private function calculatePromotionDiscount(\Shopware\Core\Checkout\Cart\Cart $cart): float

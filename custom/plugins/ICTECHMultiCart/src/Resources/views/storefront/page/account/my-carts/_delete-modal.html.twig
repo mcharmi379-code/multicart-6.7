@@ -1,0 +1,11 @@
+<form method="post" action="" class="ictech-account-carts__modal" hidden data-ictech-delete-modal>
+    <div class="ictech-account-carts__modal-dialog">
+        <h3 data-ictech-delete-modal-title>{{ 'ictech-multi-cart.account.deleteConfirmTitle'|trans }}</h3>
+        <p data-ictech-delete-modal-message>{{ 'ictech-multi-cart.account.deleteConfirm'|trans }}</p>
+        <input type="hidden" name="cartId" value="" data-ictech-delete-cart-id>
+        <div class="ictech-account-carts__modal-actions">
+            <button type="button" class="ictech-account-carts__btn ictech-account-carts__btn--ghost" data-ictech-modal-close>{{ 'ictech-multi-cart.account.deleteConfirmCancel'|trans }}</button>
+            <button type="submit" class="ictech-account-carts__btn ictech-account-carts__btn--danger">{{ 'ictech-multi-cart.account.deleteConfirmButton'|trans }}</button>
+        </div>
+    </div>
+</form>

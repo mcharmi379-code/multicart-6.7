@@ -91,6 +91,7 @@
         <service id="ICTECHMultiCart\Controller\Storefront\MultiCartAccountController" public="true" autowire="true" autoconfigure="true">
             <argument type="service" id="ICTECHMultiCart\Service\MultiCartStorefrontContextService" />
             <argument type="service" id="ICTECHMultiCart\Service\MultiCartCheckoutService" />
+            <argument type="service" id="Shopware\Storefront\Page\GenericPageLoader" />
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
@@ -108,6 +109,8 @@
             <argument type="service" id="ICTECHMultiCart\Service\AnalyticsService" />
             <argument type="service" id="ICTECHMultiCart\Service\MultiCartConfigService" />
             <argument type="service" id="Doctrine\DBAL\Connection" />
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory" />
+            <argument type="service" id="ICTECHMultiCart\Service\MultiCartPriceCalculatorService" />
             <tag name="controller.service_arguments" />
         </service>
     </services>

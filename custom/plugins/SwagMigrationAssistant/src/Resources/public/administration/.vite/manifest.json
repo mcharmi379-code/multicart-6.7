@@ -1,6 +1,6 @@
 {
   "main.ts": {
-    "file": "assets/swag-migration-assistant-DH6X1j3d.js",
+    "file": "assets/swag-migration-assistant-Bgb2wsda.js",
     "name": "swag-migration-assistant",
     "src": "main.ts",
     "isEntry": true,
@@ -50,7 +50,7 @@
     ]
   },
   "module/swag-migration/component/card/swag-migration-confirm-warning/index.ts": {
-    "file": "assets/index-CkmKVrZ7.js",
+    "file": "assets/index-BqhIzVXX.js",
     "name": "index",
     "src": "module/swag-migration/component/card/swag-migration-confirm-warning/index.ts",
     "isDynamicEntry": true,
@@ -62,7 +62,7 @@
     ]
   },
   "module/swag-migration/component/card/swag-migration-premapping/index.ts": {
-    "file": "assets/index-D_jB5xwM.js",
+    "file": "assets/index-D0wBCjk1.js",
     "name": "index",
     "src": "module/swag-migration/component/card/swag-migration-premapping/index.ts",
     "isDynamicEntry": true,
@@ -83,7 +83,7 @@
     ]
   },
   "module/swag-migration/component/card/swag-migration-shop-information/index.ts": {
-    "file": "assets/index-CdkrVS6-.js",
+    "file": "assets/index-CFipGvLC.js",
     "name": "index",
     "src": "module/swag-migration/component/card/swag-migration-shop-information/index.ts",
     "isDynamicEntry": true,
@@ -104,7 +104,7 @@
     ]
   },
   "module/swag-migration/component/loading-screen/swag-migration-result-screen/index.ts": {
-    "file": "assets/index-MjkWAiqj.js",
+    "file": "assets/index-nkCLui9f.js",
     "name": "index",
     "src": "module/swag-migration/component/loading-screen/swag-migration-result-screen/index.ts",
     "isDynamicEntry": true,
@@ -137,7 +137,7 @@
     "isDynamicEntry": true
   },
   "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-relation/index.ts": {
-    "file": "assets/index-Bd7IO38m.js",
+    "file": "assets/index-qLf5pQSO.js",
     "name": "index",
     "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-relation/index.ts",
     "isDynamicEntry": true,
@@ -149,7 +149,7 @@
     ]
   },
   "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-scalar/index.ts": {
-    "file": "assets/index-D0pGH_GU.js",
+    "file": "assets/index-BXb2uGGL.js",
     "name": "index",
     "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-scalar/index.ts",
     "isDynamicEntry": true,
@@ -164,7 +164,7 @@
     "isDynamicEntry": true
   },
   "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field/index.ts": {
-    "file": "assets/index-DsEFWWhn.js",
+    "file": "assets/index-BJI-PQqR.js",
     "name": "index",
     "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field/index.ts",
     "isDynamicEntry": true,
@@ -176,7 +176,7 @@
     ]
   },
   "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-log-filter/index.ts": {
-    "file": "assets/index-KA-jIKGD.js",
+    "file": "assets/index-D8iPFcQ7.js",
     "name": "index",
     "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-log-filter/index.ts",
     "isDynamicEntry": true,
@@ -188,7 +188,7 @@
     ]
   },
   "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-modal/index.ts": {
-    "file": "assets/index-Bx-LIJcp.js",
+    "file": "assets/index-BYtFx28g.js",
     "name": "index",
     "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-modal/index.ts",
     "isDynamicEntry": true,
@@ -200,7 +200,7 @@
     ]
   },
   "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-step/index.ts": {
-    "file": "assets/index-BHSoIFMe.js",
+    "file": "assets/index-DjBIiNHe.js",
     "name": "index",
     "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-step/index.ts",
     "isDynamicEntry": true,
@@ -242,7 +242,7 @@
     "isDynamicEntry": true
   },
   "module/swag-migration/component/swag-migration-tab-card/index.ts": {
-    "file": "assets/index-DQDas16W.js",
+    "file": "assets/index-XNuM0L6Y.js",
     "name": "index",
     "src": "module/swag-migration/component/swag-migration-tab-card/index.ts",
     "isDynamicEntry": true,
@@ -254,7 +254,7 @@
     ]
   },
   "module/swag-migration/extension/sw-dashboard-index/index.ts": {
-    "file": "assets/index-tXds0Jyl.js",
+    "file": "assets/index-DmTKPaqb.js",
     "name": "index",
     "src": "module/swag-migration/extension/sw-dashboard-index/index.ts",
     "isDynamicEntry": true,
@@ -263,7 +263,7 @@
     ]
   },
   "module/swag-migration/page/swag-migration-base/index.ts": {
-    "file": "assets/index-Dl-3Nkn_.js",
+    "file": "assets/index-DkKs_1bx.js",
     "name": "index",
     "src": "module/swag-migration/page/swag-migration-base/index.ts",
     "isDynamicEntry": true,
@@ -275,7 +275,7 @@
     ]
   },
   "module/swag-migration/page/swag-migration-data-selector/index.ts": {
-    "file": "assets/index-DVzqOhVE.js",
+    "file": "assets/index-uv_tIDnp.js",
     "name": "index",
     "src": "module/swag-migration/page/swag-migration-data-selector/index.ts",
     "isDynamicEntry": true,
@@ -296,7 +296,7 @@
     ]
   },
   "module/swag-migration/page/swag-migration-history-detail-errors/index.ts": {
-    "file": "assets/index-JqwP_2JH.js",
+    "file": "assets/index-DkEjy0SG.js",
     "name": "index",
     "src": "module/swag-migration/page/swag-migration-history-detail-errors/index.ts",
     "isDynamicEntry": true,
@@ -308,7 +308,7 @@
     ]
   },
   "module/swag-migration/page/swag-migration-history-detail/index.ts": {
-    "file": "assets/index-DM4Fju80.js",
+    "file": "assets/index-BOrKi4iF.js",
     "name": "index",
     "src": "module/swag-migration/page/swag-migration-history-detail/index.ts",
     "isDynamicEntry": true,
@@ -321,7 +321,7 @@
     ]
   },
   "module/swag-migration/page/swag-migration-history/index.ts": {
-    "file": "assets/index-DEdtU4Eb.js",
+    "file": "assets/index-bDnvUIeD.js",
     "name": "index",
     "src": "module/swag-migration/page/swag-migration-history/index.ts",
     "isDynamicEntry": true,
@@ -333,7 +333,7 @@
     ]
   },
   "module/swag-migration/page/swag-migration-index/index.ts": {
-    "file": "assets/index-HSopPnHN.js",
+    "file": "assets/index-B3JHnjMi.js",
     "name": "index",
     "src": "module/swag-migration/page/swag-migration-index/index.ts",
     "isDynamicEntry": true,
@@ -342,7 +342,7 @@
     ]
   },
   "module/swag-migration/page/swag-migration-main-page/index.ts": {
-    "file": "assets/index-Bg1imw7N.js",
+    "file": "assets/index-Dh1Kyf8-.js",
     "name": "index",
     "src": "module/swag-migration/page/swag-migration-main-page/index.ts",
     "isDynamicEntry": true,
@@ -354,7 +354,7 @@
     ]
   },
   "module/swag-migration/page/swag-migration-process-screen/index.ts": {
-    "file": "assets/index-BFR0IAVh.js",
+    "file": "assets/index-Ch0i4cg6.js",
     "name": "index",
     "src": "module/swag-migration/page/swag-migration-process-screen/index.ts",
     "isDynamicEntry": true,
@@ -366,7 +366,7 @@
     ]
   },
   "module/swag-migration/page/wizard/swag-migration-wizard-page-connection-create/index.ts": {
-    "file": "assets/index-B5jiu8-N.js",
+    "file": "assets/index-Cx41gkr5.js",
     "name": "index",
     "src": "module/swag-migration/page/wizard/swag-migration-wizard-page-connection-create/index.ts",
     "isDynamicEntry": true,
@@ -423,7 +423,7 @@
     ]
   },
   "module/swag-migration/page/wizard/swag-migration-wizard/index.ts": {
-    "file": "assets/index-upzmjNDr.js",
+    "file": "assets/index-BNzlfkKQ.js",
     "name": "index",
     "src": "module/swag-migration/page/wizard/swag-migration-wizard/index.ts",
     "isDynamicEntry": true,

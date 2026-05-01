@@ -8,6 +8,7 @@
                maxlength="255"
                placeholder="{{ 'ictech-multi-cart.account.createPlaceholder'|trans }}"
                {% if createUnavailable %}disabled{% endif %}>
+        <p class="ictech-account-carts__create-feedback" data-ictech-create-feedback hidden></p>
         {% if createUnavailable %}
             <p class="mb-0">
                 {% if multiCartState.createCartReason is same as('limit_reached') %}

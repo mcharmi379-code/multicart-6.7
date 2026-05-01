@@ -1,0 +1,15 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-item.html.twig' %}
+
+{% block page_account_order_item_order_number %}
+    {{ parent() }}
+
+    {% set ictechOrderMeta = ictechMultiCartOrders[order.id] ?? null %}
+    {% if ictechOrderMeta %}
+        <div class="mt-2">
+            <strong class="order-table-header-label">{{ 'ictech-multi-cart.orderHistory.cartLabel'|trans|sw_sanitize }}</strong>
+            <span class="order-table-body-value">{{ ictechOrderMeta.cartName }}</span>
+            <strong class="order-table-header-label ms-3">{{ 'ictech-multi-cart.orderHistory.statusLabel'|trans|sw_sanitize }}</strong>
+            <span class="badge bg-dark text-white ms-2">{{ order.stateMachineState.translated.name }}</span>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -2,29 +2,29 @@
     <div class="ictech-account-carts__modal-dialog">
         <h3>{{ 'ictech-multi-cart.account.addressModalTitle'|trans }}</h3>
         <div class="ictech-account-carts__field">
-            <label>{{ 'ictech-multi-cart.account.addressFirstName'|trans }}</label>
+            <label>{{ 'ictech-multi-cart.account.addressFirstName'|trans }} <span class="is-required">*</span></label>
             <input class="ictech-account-carts__input" type="text" name="firstName" required>
         </div>
         <div class="ictech-account-carts__field">
-            <label>{{ 'ictech-multi-cart.account.addressLastName'|trans }}</label>
+            <label>{{ 'ictech-multi-cart.account.addressLastName'|trans }} <span class="is-required">*</span></label>
             <input class="ictech-account-carts__input" type="text" name="lastName" required>
         </div>
         <div class="ictech-account-carts__field">
-            <label>{{ 'ictech-multi-cart.account.addressStreet'|trans }}</label>
+            <label>{{ 'ictech-multi-cart.account.addressStreet'|trans }} <span class="is-required">*</span></label>
             <input class="ictech-account-carts__input" type="text" name="street" required>
         </div>
         <div class="ictech-account-carts__field">
-            <label>{{ 'ictech-multi-cart.account.addressZipcode'|trans }}</label>
+            <label>{{ 'ictech-multi-cart.account.addressZipcode'|trans }} <span class="is-required">*</span></label>
             <input class="ictech-account-carts__input" type="text" name="zipcode" required>
         </div>
         <div class="ictech-account-carts__field">
-            <label>{{ 'ictech-multi-cart.account.addressCity'|trans }}</label>
+            <label>{{ 'ictech-multi-cart.account.addressCity'|trans }} <span class="is-required">*</span></label>
             <input class="ictech-account-carts__input" type="text" name="city" required>
         </div>
         <div class="ictech-account-carts__field">
-            <label>{{ 'ictech-multi-cart.account.addressCountry'|trans }}</label>
+            <label>{{ 'ictech-multi-cart.account.addressCountry'|trans }} <span class="is-required">*</span></label>
             <select class="ictech-account-carts__select" name="countryId" required>
-                {% for country in page.options.countries %}
+                {% for country in ictechMultiCartPage.options.countries %}
                     <option value="{{ country.id }}">{{ country.name }}</option>
                 {% endfor %}
             </select>

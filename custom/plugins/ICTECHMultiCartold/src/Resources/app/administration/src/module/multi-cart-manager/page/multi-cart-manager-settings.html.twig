@@ -1,0 +1,79 @@
+<sw-page class="multi-cart-manager-settings">
+    <template #smart-bar-header>
+        <h2>{{ $tc('multi-cart-manager.settings.title') }}</h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <div class="smart-bar-actions-container">
+            <sw-select-field
+                v-model:value="selectedSalesChannel"
+                :label="$tc('multi-cart-manager.settings.salesChannel')"
+                :options="salesChannels"
+                option-value-key="id"
+                option-label-key="name"
+                @change="onSalesChannelChange"
+                class="sales-channel-select"
+            />
+            <sw-button
+                variant="primary"
+                :is-loading="isSaving"
+                @click="saveConfig"
+            >
+                {{ $tc('multi-cart-manager.settings.save') }}
+            </sw-button>
+        </div>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+        <!-- General Settings -->
+        <sw-card :title="$tc('multi-cart-manager.settings.general')" class="general-settings">
+            <sw-switch-field
+                v-model:value="config.pluginEnabled"
+                :label="$tc('multi-cart-manager.settings.pluginEnabled')"
+            />
+            <sw-number-field
+                v-model:value="config.maxCartsPerUser"
+                :label="$tc('multi-cart-manager.settings.maxCartsPerUser')"
+                :min="1"
+                :max="100"
+            />
+        </sw-card>
+
+        <!-- Checkout Preferences -->
+        <sw-card :title="$tc('multi-cart-manager.settings.checkoutPreferences')" class="checkout-preferences">
+            <sw-switch-field
+                v-model:value="config.checkoutPrefsEnabled"
+                :label="$tc('multi-cart-manager.settings.checkoutPrefsEnabled')"
+            />
+        </sw-card>
+
+        <!-- Promotions -->
+        <sw-card :title="$tc('multi-cart-manager.settings.promotions')" class="promotions-settings">
+            <sw-switch-field
+                v-model:value="config.promotionsEnabled"
+                :label="$tc('multi-cart-manager.settings.promotionsEnabled')"
+            />
+        </sw-card>
+
+        <!-- Multi-Cart Payment -->
+        <sw-card :title="$tc('multi-cart-manager.settings.multiPayment')" class="multi-payment-settings">
+            <sw-switch-field
+                v-model:value="config.multiPaymentEnabled"
+                :label="$tc('multi-cart-manager.settings.multiPaymentEnabled')"
+            />
+        </sw-card>
+
+        <!-- UI Settings -->
+        <sw-card :title="$tc('multi-cart-manager.settings.ui')" class="ui-settings">
+            <sw-select-field
+                v-model:value="config.uiStyle"
+                :label="$tc('multi-cart-manager.settings.uiStyleLabel')"
+            >
+                <option value="popup">{{ $tc('multi-cart-manager.settings.uiStyle.popup') }}</option>
+                <option value="drawer">{{ $tc('multi-cart-manager.settings.uiStyle.drawer') }}</option>
+            </sw-select-field>
+        </sw-card>
+        </sw-card-view>
+    </template>
+</sw-page>

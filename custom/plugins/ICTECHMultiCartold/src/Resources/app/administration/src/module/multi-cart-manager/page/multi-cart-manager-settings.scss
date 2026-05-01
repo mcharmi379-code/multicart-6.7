@@ -1,0 +1,27 @@
+.multi-cart-manager-settings {
+    .smart-bar-actions-container {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .sales-channel-select {
+            min-width: 250px;
+        }
+    }
+
+    .general-settings,
+    .checkout-preferences,
+    .promotions-settings,
+    .multi-payment-settings,
+    .ui-settings {
+        margin-bottom: 20px;
+
+        .sw-field {
+            margin-bottom: 16px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}

@@ -1,0 +1,25 @@
+.multi-cart-manager-blacklist {
+    .smart-bar-actions-container {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .sales-channel-select {
+            min-width: 250px;
+        }
+    }
+
+    .add-form {
+        margin-bottom: 20px;
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+    }
+
+    .blacklist-table {
+        margin-bottom: 20px;
+    }
+}

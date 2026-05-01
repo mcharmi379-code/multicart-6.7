@@ -1,0 +1,9 @@
+{% if page.state.checkoutPrefsEnabled %}
+    <label class="ictech-account-carts__combined">
+        <input type="checkbox" value="{{ cart.id }}" data-ictech-combined-cart data-ictech-cart-total="{{ cart.total }}" data-ictech-cart-name="{{ cart.name }}" data-cart-id="{{ cart.id }}" {% if not page.state.multiPaymentEnabled %}disabled{% endif %}>
+        <span>{{ 'ictech-multi-cart.account.combined.selectLabel'|trans }}</span>
+    </label>
+    {% if not page.state.multiPaymentEnabled %}
+        <p class="ictech-account-carts__combined-note">{{ 'ictech-multi-cart.account.combined.disabledMessage'|trans }}</p>
+    {% endif %}
+{% endif %}

@@ -1,0 +1,17 @@
+{% if carts is empty %}
+    <div class="ictech-account-carts__empty">
+        {{ 'ictech-multi-cart.account.empty'|trans }}
+    </div>
+{% else %}
+    <section class="ictech-account-carts__grid">
+        {% for cart in carts %}
+            {% sw_include '@ICTECHMultiCart/storefront/page/account/my-carts/_cart-card.html.twig' with {
+                cart: cart
+            } %}
+        {% endfor %}
+    </section>
+
+    {% if combinedCheckoutEnabled %}
+        {% sw_include '@ICTECHMultiCart/storefront/page/account/my-carts/_combined-bar.html.twig' %}
+    {% endif %}
+{% endif %}

@@ -9,6 +9,7 @@ use ICTECHMultiCart\Service\MultiCartStorefrontContextService;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
+use Shopware\Storefront\Page\GenericPageLoader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,13 +21,15 @@ final class MultiCartAccountController extends StorefrontController
 {
     public function __construct(
         private readonly MultiCartStorefrontContextService $contextService,
-        private readonly MultiCartCheckoutService $checkoutService
+        private readonly MultiCartCheckoutService $checkoutService,
+        private readonly GenericPageLoader $genericPageLoader
     ) {
     }
 
     #[Route(path: '/account/my-carts', name: 'frontend.ictech.multi_cart.account.page', defaults: ['_loginRequired' => true, '_noStore' => true], methods: ['GET'])]
     public function index(Request $request, SalesChannelContext $salesChannelContext, CustomerEntity $customer): Response
     {
+        $page = $this->genericPageLoader->load($request, $salesChannelContext);
         $carts = $this->contextService->getAccountCarts($salesChannelContext);
         $totalItems = 0;
 
@@ -39,7 +42,8 @@ final class MultiCartAccountController extends StorefrontController
         }
 
         return $this->renderStorefront('@ICTECHMultiCart/storefront/page/account/my-carts/index.html.twig', [
-            'page' => [
+            'page' => $page,
+            'ictechMultiCartPage' => [
                 'customer' => $customer,
                 'carts' => $carts,
                 'state' => $this->contextService->getState($salesChannelContext),
@@ -165,12 +169,17 @@ final class MultiCartAccountController extends StorefrontController
 
         if (!$result['success']) {
             $messageKey = $result['messageKey'];
+            $message = $this->trans('ictech-multi-cart.account.promoApplyFailed');
+
+            if ($messageKey === 'promotion-not-found') {
+                $message = $this->trans('ictech-multi-cart.account.promoNotFound', ['%code%' => $promotionCode]);
+            } elseif (is_string($messageKey) && $messageKey !== '') {
+                $message = $this->trans($messageKey, $result['messageParameters']);
+            }
 
             return new JsonResponse([
                 'success' => false,
-                'message' => is_string($messageKey) && $messageKey !== ''
-                    ? $this->trans($messageKey, $result['messageParameters'])
-                    : $this->trans('ictech-multi-cart.account.promoApplyFailed'),
+                'message' => $message,
                 'cart' => $this->contextService->getCartSummary($cartId, $salesChannelContext),
             ], JsonResponse::HTTP_BAD_REQUEST);
         }

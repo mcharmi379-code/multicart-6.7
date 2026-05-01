@@ -38,7 +38,7 @@ final class MultiCartController extends StorefrontController
         if ($cartName === '') {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'A cart name is required.',
+                'message' => $this->trans('ictech-multi-cart.selector.cartNameRequired'),
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
@@ -69,14 +69,14 @@ final class MultiCartController extends StorefrontController
         if ($cartId === '') {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'A cart identifier is required.',
+                'message' => $this->trans('ictech-multi-cart.selector.selectCartRequired'),
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
         if (!$this->contextService->activateCart($cartId, $salesChannelContext)) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'The selected cart could not be activated.',
+                'message' => $this->trans('ictech-multi-cart.selector.switchCartError'),
                 'state' => $this->contextService->getState($salesChannelContext),
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
@@ -96,7 +96,7 @@ final class MultiCartController extends StorefrontController
         if ($cartId === '') {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'A cart identifier is required.',
+                'message' => $this->trans('ictech-multi-cart.selector.selectCartRequired'),
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
@@ -104,12 +104,17 @@ final class MultiCartController extends StorefrontController
 
         if (!$result['success']) {
             $messageKey = $result['messageKey'];
+            $message = $this->trans('ictech-multi-cart.selector.promoRequired');
+
+            if ($messageKey === 'promotion-not-found') {
+                $message = $this->trans('ictech-multi-cart.selector.promoNotFound', ['%code%' => $promotionCode]);
+            } elseif (is_string($messageKey) && $messageKey !== '') {
+                $message = $this->trans($messageKey, $result['messageParameters']);
+            }
 
             return new JsonResponse([
                 'success' => false,
-                'message' => is_string($messageKey) && $messageKey !== ''
-                    ? $this->trans($messageKey, $result['messageParameters'])
-                    : 'The promotion code could not be updated.',
+                'message' => $message,
                 'state' => $result['state'],
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
@@ -118,15 +123,11 @@ final class MultiCartController extends StorefrontController
             'success' => true,
             'applied' => $result['applied'],
             'message' => $promotionCode === ''
-                ? 'The promotion code was removed from the selected cart.'
+                ? $this->trans('ictech-multi-cart.selector.promoRemoved')
                 : (
                     $result['applied']
-                        ? 'The promotion code was applied to the selected cart.'
-                        : (
-                            is_string($result['messageKey'] ?? null) && $result['messageKey'] !== ''
-                                ? $this->trans($result['messageKey'], $result['messageParameters'])
-                                : 'The promotion code was saved for the selected cart.'
-                        )
+                        ? $this->trans('ictech-multi-cart.selector.promoApplied')
+                        : $this->trans('ictech-multi-cart.selector.promoSaved')
                 ),
             'state' => $result['state'],
         ]);
@@ -144,14 +145,14 @@ final class MultiCartController extends StorefrontController
         if ($customerId === null) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Multi-cart is not available for the current customer.',
+                'message' => $this->trans('ictech-multi-cart.selector.createDisabledUnavailable'),
             ], JsonResponse::HTTP_FORBIDDEN);
         }
 
         if ($cartId === '' || $productId === '') {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Cart and product information are required.',
+                'message' => $this->trans('ictech-multi-cart.selector.selectCartRequired'),
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
@@ -174,19 +175,69 @@ final class MultiCartController extends StorefrontController
         } catch (\JsonException) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'The product could not be added to the selected cart.',
+                'message' => $this->trans('ictech-multi-cart.selector.addError'),
             ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         } catch (\Throwable) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'The product could not be added to the selected cart.',
+                'message' => $this->trans('ictech-multi-cart.selector.addError'),
                 'state' => $this->contextService->getState($salesChannelContext),
             ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'The product was added to the selected cart.',
+            'message' => $this->trans('ictech-multi-cart.selector.addedSuccess', ['%cart%' => $cartSummary['name'] ?? '']),
+            'cart' => $cartSummary,
+            'state' => $this->contextService->getState($salesChannelContext),
+        ]);
+    }
+
+    #[Route(path: '/multi-cart/remove-product', name: 'frontend.ictech.multi_cart.remove_product', methods: ['POST'], defaults: ['XmlHttpRequest' => true, 'csrf_protected' => false])]
+    public function removeProduct(Request $request, SalesChannelContext $salesChannelContext): JsonResponse
+    {
+        $customerId = $this->contextService->getManagedCustomerId($salesChannelContext);
+        $cartId = trim((string) $request->request->get('cartId', ''));
+        $itemId = trim((string) $request->request->get('itemId', ''));
+
+        if ($customerId === null) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $this->trans('ictech-multi-cart.selector.createDisabledUnavailable'),
+            ], JsonResponse::HTTP_FORBIDDEN);
+        }
+
+        if ($cartId === '' || $itemId === '') {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $this->trans('ictech-multi-cart.selector.selectCartRequired'),
+            ], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $cartSummary = $this->itemService->removeProductFromCart(
+                $cartId,
+                $itemId,
+                $customerId,
+                $salesChannelContext
+            );
+        } catch (\InvalidArgumentException $exception) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $exception->getMessage(),
+                'state' => $this->contextService->getState($salesChannelContext),
+            ], JsonResponse::HTTP_BAD_REQUEST);
+        } catch (\Throwable) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $this->trans('ictech-multi-cart.selector.removeItemError'),
+                'state' => $this->contextService->getState($salesChannelContext),
+            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => $this->trans('ictech-multi-cart.selector.removeItemSuccess'),
             'cart' => $cartSummary,
             'state' => $this->contextService->getState($salesChannelContext),
         ]);

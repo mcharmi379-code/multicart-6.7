@@ -9,7 +9,8 @@
         <button type="button"
                 class="ictech-account-carts__btn ictech-account-carts__btn--ghost"
                 data-ictech-create-cart-toggle
-                {% if not multiCartState.canCreateCart %}disabled{% endif %}>
+                {% if not multiCartState.canCreateCart %}disabled{% endif %}
+                aria-label="{{ 'ictech-multi-cart.account.createButton'|trans }}">
             {% sw_icon 'plus-circle' style { size: 'sm', ariaHidden: true } %}
             <span>{{ 'ictech-multi-cart.account.createButton'|trans }}</span>
         </button>
@@ -26,7 +27,7 @@
         </div>
         <div class="ictech-account-carts__metric">
             <span class="ictech-account-carts__metric-label">{{ 'ictech-multi-cart.account.summary.totalItems'|trans }}</span>
-            <span class="ictech-account-carts__metric-value">{{ page.totalItems }}</span>
+            <span class="ictech-account-carts__metric-value">{{ ictechMultiCartPage.totalItems }}</span>
         </div>
     </div>
 

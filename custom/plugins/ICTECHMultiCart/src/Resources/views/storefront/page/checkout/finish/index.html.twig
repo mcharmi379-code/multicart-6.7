@@ -3,14 +3,16 @@
 {% block page_checkout_finish_details %}
     {{ parent() }}
 
-    <div class="card checkout-card mt-3">
-        <div class="card-body d-grid gap-2 d-md-flex justify-content-md-start">
-            <a href="{{ path('frontend.home.page') }}" class="btn btn-outline-primary">
-                {{ 'ictech-multi-cart.finish.goHome'|trans }}
-            </a>
-            <a href="{{ path('frontend.ictech.multi_cart.account.page') }}" class="btn btn-primary">
-                {{ 'ictech-multi-cart.finish.goMyCarts'|trans }}
-            </a>
+    {% if not context.customer.guest %}
+        <div class="card checkout-card mt-3">
+            <div class="card-body d-grid gap-2 d-md-flex gap-md-2 justify-content-md-start" style="margin-bottom: 10px;">
+                <a href="{{ path('frontend.home.page') }}" class="btn btn-outline-primary">
+                    {{ 'ictech-multi-cart.finish.goHome'|trans }}
+                </a>
+                <a href="{{ path('frontend.ictech.multi_cart.account.page') }}" class="btn btn-primary">
+                    {{ 'ictech-multi-cart.finish.goMyCarts'|trans }}
+                </a>
+            </div>
         </div>
-    </div>
+    {% endif %}
 {% endblock %}

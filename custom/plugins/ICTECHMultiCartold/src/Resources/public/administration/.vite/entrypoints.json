@@ -1,0 +1,25 @@
+{
+  "base": "/bundles/ictechmulticart/administration/",
+  "entryPoints": {
+    "i-c-t-e-c-h-multi-cart": {
+      "css": [
+        "/bundles/ictechmulticart/administration/assets/i-c-t-e-c-h-multi-cart-9dszgX9l.css"
+      ],
+      "dynamic": [],
+      "js": [
+        "/bundles/ictechmulticart/administration/assets/i-c-t-e-c-h-multi-cart-DdLLeIJ2.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}

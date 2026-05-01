@@ -1,0 +1,21 @@
+{% sw_extends '@Storefront/storefront/page/account/sidebar.html.twig' %}
+
+{% block page_account_sidebar_link_profile %}
+    {% set ictechSidebarState = ictechMultiCart is defined ? ictechMultiCart : null %}
+    {% set ictechSidebarVisible = ictechSidebarState
+        and ictechSidebarState.get('enabled')
+        and ictechSidebarState.get('customerLoggedIn')
+        and ictechSidebarState.get('customerAllowed')
+        and not ictechSidebarState.get('blacklisted') %}
+
+    {% if not context.customer.guest and ictechSidebarVisible %}
+        <a href="{{ path('frontend.ictech.multi_cart.account.page') }}"
+           title="{{ 'ictech-multi-cart.account.menuLabel'|trans|striptags }}"
+           class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.ictech.multi_cart.account.page') %} is-active{% endif %}"
+           {% if activeRoute is same as('frontend.ictech.multi_cart.account.page') %} aria-current="page"{% endif %}>
+            {{ 'ictech-multi-cart.account.menuLabel'|trans|sw_sanitize }}
+        </a>
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

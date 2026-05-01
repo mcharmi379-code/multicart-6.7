@@ -6,7 +6,7 @@
         <div class="ictech-account-carts__field">
             <label>{{ 'ictech-multi-cart.account.shippingAddress'|trans }}</label>
             <select class="ictech-account-carts__select" name="shippingAddressId" data-ictech-combined-field="shippingAddressId">
-                {% for address in page.options.addresses %}
+                {% for address in ictechMultiCartPage.options.addresses %}
                     <option value="{{ address.id }}">{{ address.label }}</option>
                 {% endfor %}
             </select>
@@ -14,7 +14,7 @@
         <div class="ictech-account-carts__field">
             <label>{{ 'ictech-multi-cart.account.billingAddress'|trans }}</label>
             <select class="ictech-account-carts__select" name="billingAddressId" data-ictech-combined-field="billingAddressId">
-                {% for address in page.options.addresses %}
+                {% for address in ictechMultiCartPage.options.addresses %}
                     <option value="{{ address.id }}">{{ address.label }}</option>
                 {% endfor %}
             </select>
@@ -22,7 +22,7 @@
         <div class="ictech-account-carts__field">
             <label>{{ 'ictech-multi-cart.account.paymentMethod'|trans }}</label>
             <select class="ictech-account-carts__select" name="paymentMethodId" data-ictech-combined-field="paymentMethodId">
-                {% for method in page.options.paymentMethods %}
+                {% for method in ictechMultiCartPage.options.paymentMethods %}
                     <option value="{{ method.id }}">{{ method.name }}</option>
                 {% endfor %}
             </select>
@@ -30,7 +30,7 @@
         <div class="ictech-account-carts__field">
             <label>{{ 'ictech-multi-cart.account.shippingMethod'|trans }}</label>
             <select class="ictech-account-carts__select" name="shippingMethodId" data-ictech-combined-field="shippingMethodId">
-                {% for method in page.options.shippingMethods %}
+                {% for method in ictechMultiCartPage.options.shippingMethods %}
                     <option value="{{ method.id }}">{{ method.name }}</option>
                 {% endfor %}
             </select>

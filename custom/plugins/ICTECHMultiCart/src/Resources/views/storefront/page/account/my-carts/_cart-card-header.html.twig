@@ -3,7 +3,6 @@
         <div class="ictech-account-carts__title-row">
             <h2 class="ictech-account-carts__card-title" data-ictech-cart-title>{{ cart.name }}</h2>
             <button type="button" class="ictech-account-carts__edit-name" data-ictech-rename-toggle aria-label="{{ 'ictech-multi-cart.account.renameButton'|trans|striptags }}">
-                {% sw_icon 'pencil' style { size: 'sm', ariaHidden: true } %}
                 <span>{{ 'ictech-multi-cart.account.renameButton'|trans }}</span>
             </button>
         </div>
@@ -31,12 +30,18 @@
             <button type="submit" class="ictech-account-carts__icon-btn ictech-account-carts__icon-btn--primary" title="{{ 'ictech-multi-cart.account.checkout'|trans|striptags }}">{% sw_icon 'bag' style { size: 'sm', ariaHidden: true } %}</button>
         </form>
         <form method="post" action="{{ path('frontend.ictech.multi_cart.account.duplicate', { cartId: cart.id }) }}" class="ictech-account-carts__icon-form">
-            <button type="submit" class="ictech-account-carts__icon-btn" title="{{ 'ictech-multi-cart.account.duplicate'|trans|striptags }}">{% sw_icon 'arrow-switch' style { size: 'sm', ariaHidden: true } %}</button>
+            <button
+                type="submit"
+                class="ictech-account-carts__icon-btn"
+                title="{{ 'ictech-multi-cart.account.duplicate'|trans|striptags }}"
+                {% if multiCartState is defined and not multiCartState.canCreateCart %}
+                    disabled
+                    aria-disabled="true"
+                {% endif %}
+            >{% sw_icon 'arrow-switch' style { size: 'sm', ariaHidden: true } %}</button>
         </form>
         {% if not cart.isDefault %}
-            <form method="post" action="{{ path('frontend.ictech.multi_cart.account.delete', { cartId: cart.id }) }}" class="ictech-account-carts__icon-form">
-                <button type="submit" class="ictech-account-carts__icon-btn ictech-account-carts__icon-btn--danger" title="{{ 'ictech-multi-cart.account.delete'|trans|striptags }}">{% sw_icon 'trash' style { size: 'sm', ariaHidden: true } %}</button>
-            </form>
+            <button type="button" class="ictech-account-carts__icon-btn ictech-account-carts__icon-btn--danger" data-ictech-delete-cart="{{ cart.id }}" title="{{ 'ictech-multi-cart.account.delete'|trans|striptags }}">{% sw_icon 'trash' style { size: 'sm', ariaHidden: true } %}</button>
         {% endif %}
     </div>
 </div>

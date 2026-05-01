@@ -40,9 +40,9 @@
     promoSavedLabel: 'ictech-multi-cart.selector.promoSaved'|trans,
     promoRemovedLabel: 'ictech-multi-cart.selector.promoRemoved'|trans,
     promoHelpLabel: 'ictech-multi-cart.selector.promoHelp'|trans,
-    renameCartLabel: 'ictech-multi-cart.account.renameButton'|trans,
-    renameLabel: 'ictech-multi-cart.account.renameLabel'|trans,
-    renameSaveLabel: 'ictech-multi-cart.account.renameSave'|trans,
+    renameCartLabel: 'ictech-multi-cart.selector.renameCartLabel'|trans,
+    renameLabel: 'ictech-multi-cart.selector.renameLabel'|trans,
+    renameSaveLabel: 'ictech-multi-cart.selector.renameSaveLabel'|trans,
     renameNameRequiredLabel: 'ictech-multi-cart.account.renameNameRequired'|trans,
     renameSuccessLabel: 'ictech-multi-cart.account.renameSuccess'|trans,
     renameFailedLabel: 'ictech-multi-cart.account.renameFailed'|trans,
@@ -55,6 +55,9 @@
     cartNameRequiredLabel: 'ictech-multi-cart.selector.cartNameRequired'|trans,
     createErrorLabel: 'ictech-multi-cart.selector.createError'|trans,
     addErrorLabel: 'ictech-multi-cart.selector.addError'|trans,
+    removeItemLabel: 'ictech-multi-cart.selector.removeItem'|trans,
+    removeItemSuccessLabel: 'ictech-multi-cart.selector.removeItemSuccess'|trans,
+    removeItemErrorLabel: 'ictech-multi-cart.selector.removeItemError'|trans,
     addedSuccessLabel: 'ictech-multi-cart.selector.addedSuccess'|trans,
     productFallbackLabel: 'ictech-multi-cart.selector.productFallback'|trans,
     cartFallbackLabel: 'ictech-multi-cart.selector.cartFallback'|trans
@@ -77,6 +80,7 @@
         data-multi-cart-create-url="{{ path('frontend.ictech.multi_cart.create') }}"
         data-multi-cart-activate-url="{{ path('frontend.ictech.multi_cart.activate') }}"
         data-multi-cart-add-url="{{ path('frontend.ictech.multi_cart.add_product') }}"
+        data-multi-cart-remove-url="{{ path('frontend.ictech.multi_cart.remove_product') }}"
         data-multi-cart-promotion-url="{{ path('frontend.ictech.multi_cart.promotion') }}"
         data-multi-cart-rename-url-template="{{ path('frontend.ictech.multi_cart.account.rename', { cartId: '__cartId__' }) }}"
         data-multi-cart-checkout-url-template="{{ path('frontend.ictech.multi_cart.checkout.cart', { cartId: '__cartId__' }) }}"

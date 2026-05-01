@@ -1,0 +1,38 @@
+{% sw_extends '@Storefront/storefront/page/account/_page.html.twig' %}
+
+{% set multiCartState = page.state %}
+{% set carts = page.carts %}
+{% set combinedCheckoutEnabled = multiCartState.checkoutPrefsEnabled and multiCartState.multiPaymentEnabled %}
+
+{% block page_account_main_content %}
+    <div class="ictech-account-carts"
+         data-ictech-multi-cart-account="true"
+         data-ictech-preferences-url-template="{{ path('frontend.ictech.multi_cart.account.preferences', { cartId: '__cartId__' }) }}"
+         data-ictech-promotion-url-template="{{ path('frontend.ictech.multi_cart.account.promotion', { cartId: '__cartId__' }) }}"
+         data-ictech-rename-url-template="{{ path('frontend.ictech.multi_cart.account.rename', { cartId: '__cartId__' }) }}"
+         data-ictech-address-url="{{ path('frontend.ictech.multi_cart.account.address.create') }}"
+         data-ictech-combined-url="{{ path('frontend.ictech.multi_cart.account.combined_checkout') }}"
+         data-ictech-conflict-resolution="{{ multiCartState.conflictResolution }}"
+         data-ictech-combined-mismatch-label="{{ 'ictech-multi-cart.account.combined.mismatchIntro'|trans }}"
+         data-ictech-combined-override-label="{{ 'ictech-multi-cart.account.combined.overrideConflict'|trans }}"
+         data-ictech-combined-warning-label="{{ 'ictech-multi-cart.account.combined.warningConflict'|trans }}"
+         data-ictech-combined-require-same-label="{{ 'ictech-multi-cart.account.combined.requireSameConflict'|trans }}"
+         data-ictech-promo-apply-label="{{ 'ictech-multi-cart.account.promoApply'|trans }}"
+         data-ictech-promo-applied-label="{{ 'ictech-multi-cart.account.promoApplied'|trans }}"
+         data-ictech-promo-saved-label="{{ 'ictech-multi-cart.account.promoSaved'|trans }}"
+         data-ictech-promo-removed-label="{{ 'ictech-multi-cart.account.promoRemoved'|trans }}"
+         data-ictech-promo-failed-label="{{ 'ictech-multi-cart.account.promoApplyFailed'|trans }}"
+         data-ictech-rename-name-required-label="{{ 'ictech-multi-cart.account.renameNameRequired'|trans }}"
+         data-ictech-rename-failed-label="{{ 'ictech-multi-cart.account.renameFailed'|trans }}"
+         data-ictech-address-create-failed-label="{{ 'ictech-multi-cart.account.addressCreateFailed'|trans }}"
+         data-ictech-combined-enabled="{{ combinedCheckoutEnabled ? 'true' : 'false' }}"
+         data-ictech-combined-disabled-label="{{ 'ictech-multi-cart.account.combined.disabledMessage'|trans }}">
+        {% sw_include '@ICTECHMultiCart/storefront/page/account/my-carts/_hero.html.twig' %}
+        {% sw_include '@ICTECHMultiCart/storefront/page/account/my-carts/_grid.html.twig' %}
+        {% sw_include '@ICTECHMultiCart/storefront/page/account/my-carts/_create-modal.html.twig' %}
+        {% sw_include '@ICTECHMultiCart/storefront/page/account/my-carts/_address-modal.html.twig' %}
+        {% if combinedCheckoutEnabled %}
+            {% sw_include '@ICTECHMultiCart/storefront/page/account/my-carts/_combined-modal.html.twig' %}
+        {% endif %}
+    </div>
+{% endblock %}

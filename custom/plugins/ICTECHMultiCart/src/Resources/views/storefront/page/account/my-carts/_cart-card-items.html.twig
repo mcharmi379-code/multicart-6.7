@@ -5,7 +5,17 @@
                 <strong>{{ item.productName }}</strong>
                 {{ item.productNumber }} x{{ item.quantity }}
             </span>
-            <span>{{ item.totalPrice|currency(cart.currencyIso) }}</span>
+            <span class="ictech-account-carts__item-actions">
+                <span>{{ item.totalPrice|currency(cart.currencyIso) }}</span>
+                <button type="button"
+                        class="ictech-account-carts__item-remove"
+                        data-ictech-remove-item="{{ item.id }}"
+                        data-cart-id="{{ cart.id }}"
+                        aria-label="{{ 'ictech-multi-cart.selector.removeItem'|trans }}"
+                        title="{{ 'ictech-multi-cart.selector.removeItem'|trans }}">
+                    &times;
+                </button>
+            </span>
         </li>
     {% else %}
         <li class="ictech-account-carts__item">

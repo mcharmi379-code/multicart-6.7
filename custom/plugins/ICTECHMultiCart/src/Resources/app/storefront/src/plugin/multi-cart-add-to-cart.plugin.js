@@ -389,6 +389,19 @@ export default class MultiCartAddToCartPlugin extends AddToCartPlugin {
             });
         }
 
+        container.querySelectorAll('[data-multi-cart-remove-item]').forEach((button) => {
+            button.addEventListener('click', async () => {
+                const itemId = button.dataset.multiCartRemoveItem;
+
+                if (!this._selectedCartId || !itemId) {
+                    this._setFeedback(this._labels.removeItemErrorLabel || 'The product could not be removed from the selected cart.');
+                    return;
+                }
+
+                await this._removeItemFromSelectedCart(this._selectedCartId, itemId);
+            });
+        });
+
         const closeButton = container.querySelector('[data-multi-cart-close]');
         if (closeButton) {
             closeButton.addEventListener('click', () => this._closeSelector());
@@ -584,6 +597,40 @@ export default class MultiCartAddToCartPlugin extends AddToCartPlugin {
         this._restoreFeedback();
     }
 
+    async _removeItemFromSelectedCart(cartId, itemId) {
+        const removeUrl = this.el.dataset.multiCartRemoveUrl;
+
+        if (!removeUrl) {
+            this._setFeedback(this._labels.removeItemErrorLabel || 'The product could not be removed from the selected cart.');
+            return;
+        }
+
+        const response = await fetch(removeUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: new URLSearchParams({
+                cartId,
+                itemId,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            this._setFeedback(data.message || this._labels.removeItemErrorLabel || 'The product could not be removed from the selected cart.');
+            return;
+        }
+
+        this._selectorState = data.state || this._selectorState;
+        this._selectedCartId = this._resolveSelectedCartId(this._selectorState, cartId);
+        this._setFeedback(data.message || this._labels.removeItemSuccessLabel || 'The product was removed from the selected cart.', 'success');
+        this._rerenderSelector();
+        this._restoreFeedback();
+    }
+
     _rerenderSelector() {
         const markup = this._renderSelectorMarkup();
 
@@ -700,7 +747,10 @@ export default class MultiCartAddToCartPlugin extends AddToCartPlugin {
                             <strong>${this._escapeHtml(item.productName || this._labels.productFallbackLabel || 'Product')}</strong>
                             <span>${this._escapeHtml(`${item.productNumber || ''} x${Number(item.quantity || 0)}`.trim())}</span>
                         </div>
-                        <span>${this._escapeHtml(this._formatPrice(item.totalPrice, cart.currencyIso))}</span>
+                        <div class="ictech-multi-cart-selector__item-actions">
+                            <span>${this._escapeHtml(this._formatPrice(item.totalPrice, cart.currencyIso))}</span>
+                            <button type="button" class="ictech-multi-cart-selector__item-remove" data-multi-cart-remove-item="${this._escapeHtml(item.id || '')}" aria-label="${this._escapeHtml(this._labels.removeItemLabel || 'Remove product')}" title="${this._escapeHtml(this._labels.removeItemLabel || 'Remove product')}">&times;</button>
+                        </div>
                     </div>
                 `).join('')}
             </div>
@@ -808,15 +858,16 @@ export default class MultiCartAddToCartPlugin extends AddToCartPlugin {
             .ictech-multi-cart-selector__panel{padding:1.25rem;border:1px solid var(--ictech-border);border-radius:1.35rem;background:var(--ictech-surface);box-shadow:var(--ictech-shadow)}
             .ictech-multi-cart-selector__panel--accent{background:linear-gradient(180deg,#fff 0,#f7faff 100%)}
             .ictech-multi-cart-selector__panel--soft{margin-top:1rem;background:linear-gradient(180deg,#fff 0,#f9fbff 100%)}
-            .ictech-multi-cart-selector__section-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem}
-            .ictech-multi-cart-selector__section-head h3,.ictech-multi-cart-selector__popup-products h4{margin:0;font-size:1rem;font-weight:800}
-            .ictech-multi-cart-selector__section-head span,.ictech-multi-cart-selector__popup-products{color:var(--ictech-muted)}
+            .ictech-multi-cart-selector__section-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
+            .ictech-multi-cart-selector__section-head h3,.ictech-multi-cart-selector__popup-products h4{margin:0;font-size:1rem;font-weight:800;min-width:0}
+            .ictech-multi-cart-selector__section-head span,.ictech-multi-cart-selector__popup-products{color:var(--ictech-muted);word-break:break-word;overflow-wrap:break-word;min-width:0}
             .ictech-multi-cart-cards,.ictech-multi-cart-selector__items{display:grid;gap:.75rem}
             .ictech-multi-cart-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.25rem 1rem;width:100%;padding:1rem 1.05rem;border:1px solid var(--ictech-border);border-radius:1rem;background:var(--ictech-surface-soft);text-align:left;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
             .ictech-multi-cart-card:hover,.ictech-multi-cart-card:focus{transform:translateY(-1px);border-color:var(--ictech-brand);box-shadow:0 16px 34px rgba(10,86,198,.12)}
             .ictech-multi-cart-card.is-active{border-color:var(--ictech-border-strong);background:var(--ictech-surface-highlight)}
-            .ictech-multi-cart-card__name,.ictech-multi-cart-selector__item strong,.ictech-multi-cart-selector__pending strong{font-weight:800;color:var(--ictech-ink)}
-            .ictech-multi-cart-card__meta,.ictech-multi-cart-card__action,.ictech-multi-cart-empty,.ictech-multi-cart-selector__item span,.ictech-multi-cart-selector__pending-label{color:var(--ictech-muted);font-size:.92rem}
+            .ictech-multi-cart-card__name{font-weight:800;color:var(--ictech-ink);word-break:break-word;overflow-wrap:break-word;min-width:0;max-width:100%}
+            .ictech-multi-cart-selector__item strong,.ictech-multi-cart-selector__pending strong{font-weight:800;color:var(--ictech-ink)}
+            .ictech-multi-cart-card__meta,.ictech-multi-cart-card__action,.ictech-multi-cart-empty,.ictech-multi-cart-selector__item span,.ictech-multi-cart-selector__pending-label{color:var(--ictech-muted);font-size:.92rem;word-break:break-word;overflow-wrap:break-word}
             .ictech-multi-cart-card__price{grid-row:1/span 2;grid-column:2;align-self:center;font-weight:800;color:var(--ictech-ink)}
             .ictech-multi-cart-card__action{color:var(--ictech-brand);font-weight:700}
             .ictech-multi-cart-selector__label{display:block;margin-bottom:.45rem;font-weight:700;color:var(--ictech-ink)}
@@ -836,8 +887,12 @@ export default class MultiCartAddToCartPlugin extends AddToCartPlugin {
             .ictech-multi-cart-selector__primary:hover,.ictech-multi-cart-selector__secondary:hover,.ictech-multi-cart-selector__promo-button:hover,.ictech-multi-cart-selector__ghost:hover{transform:translateY(-1px)}
             .ictech-multi-cart-selector__primary:disabled,.ictech-multi-cart-selector__secondary:disabled,.ictech-multi-cart-selector__promo-button:disabled{cursor:not-allowed;opacity:.55}
             .ictech-multi-cart-selector__pending{display:grid;gap:.15rem;padding:.95rem 1rem;border-radius:1rem;background:rgba(255,255,255,.8);border:1px solid rgba(10,86,198,.12)}
-            .ictech-multi-cart-selector__item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.75rem;align-items:center;padding-bottom:.65rem;border-bottom:1px solid #e7edf5}
+            .ictech-multi-cart-selector__item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.75rem;align-items:flex-start;padding-bottom:.65rem;border-bottom:1px solid #e7edf5}
             .ictech-multi-cart-selector__item:last-child{padding-bottom:0;border-bottom:0}
+            .ictech-multi-cart-selector__item > div:first-child{min-width:0;display:flex;flex-direction:column;gap:.25rem}
+            .ictech-multi-cart-selector__item-actions{display:flex;align-items:center;gap:.6rem}
+            .ictech-multi-cart-selector__item-remove{display:inline-flex;align-items:center;justify-content:center;width:1.85rem;height:1.85rem;border:1px solid var(--ictech-border);border-radius:999px;background:#fff;color:#8e1f1f;font-size:1.1rem;font-weight:800;line-height:1;transition:transform .2s ease,border-color .2s ease,background-color .2s ease}
+            .ictech-multi-cart-selector__item-remove:hover,.ictech-multi-cart-selector__item-remove:focus{transform:translateY(-1px);border-color:#c0392b;background:#fff5f5;outline:0}
             .ictech-multi-cart-selector__summary{margin-top:1rem;padding-top:1rem;border-top:1px solid #e7edf5}
             .ictech-multi-cart-selector__summary-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;font-size:1rem}
             .ictech-multi-cart-selector__summary-row strong{font-size:1.08rem}
@@ -851,7 +906,7 @@ export default class MultiCartAddToCartPlugin extends AddToCartPlugin {
             .ictech-multi-cart-selector__feedback.is-success{color:#1c7c48}
             .ictech-multi-cart-selector__feedback.is-error{color:#c0392b}
             .ictech-multi-cart-selector__helper{margin:.75rem 0 0;color:var(--ictech-muted);font-size:.9rem;line-height:1.5}
-            .ictech-multi-cart-drawer{width:min(100vw,420px);max-width:420px;padding:1rem;background:radial-gradient(circle at top left,rgba(10,86,198,.12),transparent 26%),linear-gradient(180deg,#f6f9ff 0,#fff 100%)}
+            .offcanvas.ictech-multi-cart-drawer{width:min(100vw,420px);max-width:420px;height:100vh;overflow-y:scroll;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:1rem;background:radial-gradient(circle at top left,rgba(10,86,198,.12),transparent 26%),linear-gradient(180deg,#f6f9ff 0,#fff 100%)}
             .ictech-multi-cart-selector--drawer .ictech-multi-cart-selector__panel{padding:1rem;box-shadow:0 14px 34px rgba(14,33,68,.08)}
             .ictech-multi-cart-selector--drawer .ictech-multi-cart-selector__ghost{padding-inline:.5rem;font-size:.82rem}
             @media (max-width:991.98px){.ictech-multi-cart-modal .modal-dialog.ictech-multi-cart-modal__dialog{max-width:calc(100vw - 1rem);margin:.5rem auto}.ictech-multi-cart-selector--popup{min-width:min(100vw - 2rem,760px)}.ictech-multi-cart-selector__grid{grid-template-columns:1fr}}
